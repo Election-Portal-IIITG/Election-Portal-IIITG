@@ -1,0 +1,1 @@
+INSERT INTO election_manager (email_id, password) VALUES ('elections@iiitg.ac.in', 'dummyLoLoL');

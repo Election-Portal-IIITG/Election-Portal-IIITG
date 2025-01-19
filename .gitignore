@@ -51,3 +51,9 @@ Thumbs.db
 *.tmp
 *.bak
 *.old
+
+### Dot ENV Files ###
+.env
+.env.local
+*.env
+!.env.example
