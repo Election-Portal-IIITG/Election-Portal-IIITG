@@ -1,6 +1,7 @@
 package com.iiitg.election.student;
 
 import com.iiitg.election.annotations.ValidEmail;
+import com.iiitg.election.core.Position;
 import com.iiitg.election.faculty.Faculty;
 
 import jakarta.persistence.Column;
@@ -20,7 +21,7 @@ public class Candidate {
 	@Email(message = "Invalid email format")
 	@ValidEmail
 	@NotNull(message = "Email ID cannot be null")
-    @Column(name = "student_email_id")
+    @Column(name = "student_email_id", unique = true)
     private String studentEmailId;
 	
 	@NotNull(message = "Programme cannot be null")
@@ -40,24 +41,29 @@ public class Candidate {
 	private String about;
 	
 	@NotNull(message = "Eligibility cannot be null")
-	@Column(name = "is_eligible", nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
-	private boolean isEligible;
+	@Column(name = "is_eligible")
+	private Boolean isEligible;
 	
 	@Column(name = "manifesto")
 	private String manifesto;
 	
 	@OneToOne
 	@MapsId
-	@JoinColumn(name = "student_email_id")
+	@JoinColumn(name = "student_email_id", referencedColumnName = "student_email_id")
 	private Student student;
 	
 	@ManyToOne
-    @JoinColumn(name = "nominated_by", referencedColumnName = "student_email_id", nullable = false)
+    @JoinColumn(name = "nominated_by", referencedColumnName = "student_email_id")
     private Student nominatedBy;
 	
 	@ManyToOne
 	@JoinColumn(name = "approved_by", referencedColumnName = "email_id")
 	private Faculty approvedBy;
+	
+	@OneToOne
+    @JoinColumn(name = "position_id", referencedColumnName = "position_id", nullable = false)
+    private Position position;
+	
 
 	
 	public Candidate() {

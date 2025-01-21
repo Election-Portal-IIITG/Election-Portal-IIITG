@@ -26,8 +26,12 @@ public class Student {
 	@Column(name = "first_name", nullable = false)
 	private String firstName;
 
-	@Column(name = "last_name", nullable = true)
+	@Column(name = "last_name")
 	private String lastName;
+	
+	@NotNull(message = "Roll Number cannot be null")
+	@Column(name = "roll_number", nullable = false, unique = true)
+	private String rollNumber;
 
 	@NotNull(message = "Password cannot be null")
 	@Column(name = "password", nullable = false)
@@ -38,7 +42,7 @@ public class Student {
 	private boolean onCampus;
 
 	@NotNull(message = "Has Voted cannot be null")
-	@Column(name = "has_voted", nullable = false)
+	@Column(name = "has_voted", nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
 	private boolean hasVoted;
 
 	@OneToOne(mappedBy = "student")
@@ -54,6 +58,7 @@ public class Student {
 	public Student(
 			@Email(message = "Invalid email format") @NotNull(message = "Email ID cannot be null") String studentEmailId,
 			@NotNull(message = "Firstname cannot be null") String firstName, String lastName,
+			@NotNull(message = "Roll Number cannot be null") String rollNumber,
 			@NotNull(message = "Password cannot be null") String password,
 			@NotNull(message = "On Campus cannot be null") boolean onCampus,
 			@NotNull(message = "Has Voted cannot be null") boolean hasVoted, Candidate candidateProfile,
@@ -62,6 +67,7 @@ public class Student {
 		this.studentEmailId = studentEmailId;
 		this.firstName = firstName;
 		this.lastName = lastName;
+		this.rollNumber = rollNumber;
 		this.password = password;
 		this.onCampus = onCampus;
 		this.hasVoted = hasVoted;
@@ -91,6 +97,14 @@ public class Student {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+
+	public String getRollNumber() {
+		return rollNumber;
+	}
+
+	public void setRollNumber(String rollNo) {
+		this.rollNumber = rollNo;
 	}
 
 	public String getPassword() {
@@ -136,9 +150,9 @@ public class Student {
 	@Override
 	public String toString() {
 		return "Student [studentEmailId=" + studentEmailId + ", firstName=" + firstName + ", lastName=" + lastName
-				+ ", password=" + password + ", onCampus=" + onCampus + ", hasVoted=" + hasVoted + ", candidateProfile="
-				+ candidateProfile + ", nominatedCandidates=" + nominatedCandidates + "]";
+				+ ", Roll Number=" + rollNumber + ", password=" + password + ", onCampus=" + onCampus + ", hasVoted=" + hasVoted
+				+ ", candidateProfile=" + candidateProfile + ", nominatedCandidates=" + nominatedCandidates + "]";
 	}
 
-	
+		
 }

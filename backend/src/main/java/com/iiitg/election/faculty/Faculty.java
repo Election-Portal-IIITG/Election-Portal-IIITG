@@ -19,7 +19,7 @@ public class Faculty {
 	@Email(message = "Invalid email format")
 	@ValidEmail
 	@NotNull(message = "Email ID cannot be null")
-	@Column(name = "email_id", nullable = false)
+	@Column(name = "email_id", nullable = false, unique = true)
 	private String emailId;
 	
 	
@@ -34,7 +34,7 @@ public class Faculty {
 	@Column(name = "password", nullable = false)
 	private String password;
 	
-	@Column(name = "is_available")
+	@Column(name = "is_available", columnDefinition = "BOOLEAN DEFAULT false")
 	private boolean isAvailable;
 	
 	@OneToMany(mappedBy = "approvedBy")

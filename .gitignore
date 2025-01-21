@@ -1,3 +1,4 @@
 ### STS / Eclipse ###
 .project
 bin/
+.vscode
