@@ -1,0 +1,144 @@
+package com.iiitg.election.student;
+
+import java.util.List;
+
+import com.iiitg.election.annotations.ValidEmail;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+
+@Entity(name = "student")
+public class Student {
+
+	@Id
+	@Email(message = "Invalid email format")
+	@ValidEmail
+	@NotNull(message = "Email ID cannot be null")
+	@Column(name = "student_email_id", nullable = false, unique = true)
+	private String studentEmailId;
+
+	@NotNull(message = "Firstname cannot be null")
+	@Column(name = "first_name", nullable = false)
+	private String firstName;
+
+	@Column(name = "last_name", nullable = true)
+	private String lastName;
+
+	@NotNull(message = "Password cannot be null")
+	@Column(name = "password", nullable = false)
+	private String password;
+
+	@NotNull(message = "On Campus cannot be null")
+	@Column(name = "on_campus", nullable = false)
+	private boolean onCampus;
+
+	@NotNull(message = "Has Voted cannot be null")
+	@Column(name = "has_voted", nullable = false)
+	private boolean hasVoted;
+
+	@OneToOne(mappedBy = "student")
+	private Candidate candidateProfile;
+
+	@OneToMany(mappedBy = "nominatedBy")
+	private List<Candidate> nominatedCandidates;
+
+	public Student() {
+		super();
+	}
+
+	public Student(
+			@Email(message = "Invalid email format") @NotNull(message = "Email ID cannot be null") String studentEmailId,
+			@NotNull(message = "Firstname cannot be null") String firstName, String lastName,
+			@NotNull(message = "Password cannot be null") String password,
+			@NotNull(message = "On Campus cannot be null") boolean onCampus,
+			@NotNull(message = "Has Voted cannot be null") boolean hasVoted, Candidate candidateProfile,
+			List<Candidate> nominatedCandidates) {
+		super();
+		this.studentEmailId = studentEmailId;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.password = password;
+		this.onCampus = onCampus;
+		this.hasVoted = hasVoted;
+		this.candidateProfile = candidateProfile;
+		this.nominatedCandidates = nominatedCandidates;
+	}
+
+	public String getStudentEmailId() {
+		return studentEmailId;
+	}
+
+	public void setStudentEmailId(String studentEmailId) {
+		this.studentEmailId = studentEmailId;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public boolean isOnCampus() {
+		return onCampus;
+	}
+
+	public void setOnCampus(boolean onCampus) {
+		this.onCampus = onCampus;
+	}
+
+	public boolean isHasVoted() {
+		return hasVoted;
+	}
+
+	public void setHasVoted(boolean hasVoted) {
+		this.hasVoted = hasVoted;
+	}
+
+	public Candidate getCandidateProfile() {
+		return candidateProfile;
+	}
+
+	public void setCandidateProfile(Candidate candidateProfile) {
+		this.candidateProfile = candidateProfile;
+	}
+
+	public List<Candidate> getNominatedCandidates() {
+		return nominatedCandidates;
+	}
+
+	public void setNominatedCandidates(List<Candidate> nominatedCandidates) {
+		this.nominatedCandidates = nominatedCandidates;
+	}
+
+	@Override
+	public String toString() {
+		return "Student [studentEmailId=" + studentEmailId + ", firstName=" + firstName + ", lastName=" + lastName
+				+ ", password=" + password + ", onCampus=" + onCampus + ", hasVoted=" + hasVoted + ", candidateProfile="
+				+ candidateProfile + ", nominatedCandidates=" + nominatedCandidates + "]";
+	}
+
+	
+}
