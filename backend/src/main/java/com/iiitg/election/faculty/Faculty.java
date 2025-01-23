@@ -34,11 +34,15 @@ public class Faculty {
 	@Column(name = "password", nullable = false)
 	private String password;
 	
-	@Column(name = "is_available", columnDefinition = "BOOLEAN DEFAULT false")
+	@Column(name = "is_available", columnDefinition = "BOOLEAN DEFAULT true")
 	private boolean isAvailable;
 	
 	@OneToMany(mappedBy = "approvedBy")
 	private List<Candidate> approvedCandidates;
+
+	public Faculty() {
+		super();
+	}
 
 	public Faculty(
 			@Email(message = "Invalid email format") @NotNull(message = "Email ID cannot be null") String emailId,

@@ -1,11 +1,14 @@
 package com.iiitg.election.student;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.iiitg.election.annotations.ValidEmail;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
@@ -45,11 +48,11 @@ public class Student {
 	@Column(name = "has_voted", nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
 	private boolean hasVoted;
 
-	@OneToOne(mappedBy = "student")
+	@OneToOne(mappedBy = "student", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Candidate candidateProfile;
 
-	@OneToMany(mappedBy = "nominatedBy")
-	private List<Candidate> nominatedCandidates;
+	@OneToMany(mappedBy = "nominatedBy", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	private List<Candidate> nominatedCandidates = new ArrayList<>();
 
 	public Student() {
 		super();
@@ -61,8 +64,7 @@ public class Student {
 			@NotNull(message = "Roll Number cannot be null") String rollNumber,
 			@NotNull(message = "Password cannot be null") String password,
 			@NotNull(message = "On Campus cannot be null") boolean onCampus,
-			@NotNull(message = "Has Voted cannot be null") boolean hasVoted, Candidate candidateProfile,
-			List<Candidate> nominatedCandidates) {
+			@NotNull(message = "Has Voted cannot be null") boolean hasVoted, Candidate candidateProfile) {
 		super();
 		this.studentEmailId = studentEmailId;
 		this.firstName = firstName;
@@ -72,7 +74,6 @@ public class Student {
 		this.onCampus = onCampus;
 		this.hasVoted = hasVoted;
 		this.candidateProfile = candidateProfile;
-		this.nominatedCandidates = nominatedCandidates;
 	}
 
 	public String getStudentEmailId() {

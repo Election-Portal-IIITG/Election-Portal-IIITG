@@ -60,8 +60,8 @@ public class Candidate {
 	@JoinColumn(name = "approved_by", referencedColumnName = "email_id")
 	private Faculty approvedBy;
 	
-	@OneToOne
-    @JoinColumn(name = "position_id", referencedColumnName = "position_id", nullable = false)
+	@ManyToOne
+    @JoinColumn(name = "position_id", referencedColumnName = "position_id")
     private Position position;
 	
 
@@ -69,7 +69,118 @@ public class Candidate {
 	public Candidate() {
         super();
     }
+	
+	public Candidate(Student student, String programme, int graduatingYear, 
+            String studentImage, String about, Position position) {
+		super();
+		this.student = student;
+		this.studentEmailId = student.getStudentEmailId();
+		this.programme = programme;
+		this.graduatingYear = graduatingYear;
+		this.studentImage = studentImage;
+		this.about = about;
+		this.position = position;
+		this.isEligible = null;
+		this.manifesto = null;
+		this.nominatedBy = null;
+		this.approvedBy = null;
+	}
 
+	public String getStudentEmailId() {
+		return studentEmailId;
+	}
 
-		
+	public void setStudentEmailId(String studentEmailId) {
+		this.studentEmailId = studentEmailId;
+	}
+
+	public String getProgramme() {
+		return programme;
+	}
+
+	public void setProgramme(String programme) {
+		this.programme = programme;
+	}
+
+	public int getGraduatingYear() {
+		return graduatingYear;
+	}
+
+	public void setGraduatingYear(int graduatingYear) {
+		this.graduatingYear = graduatingYear;
+	}
+
+	public String getStudentImage() {
+		return studentImage;
+	}
+
+	public void setStudentImage(String studentImage) {
+		this.studentImage = studentImage;
+	}
+
+	public String getAbout() {
+		return about;
+	}
+
+	public void setAbout(String about) {
+		this.about = about;
+	}
+
+	public Boolean getIsEligible() {
+		return isEligible;
+	}
+
+	public void setIsEligible(Boolean isEligible) {
+		this.isEligible = isEligible;
+	}
+
+	public String getManifesto() {
+		return manifesto;
+	}
+
+	public void setManifesto(String manifesto) {
+		this.manifesto = manifesto;
+	}
+
+	public Student getStudent() {
+		return student;
+	}
+
+	public void setStudent(Student student) {
+		this.student = student;
+	}
+
+	public Student getNominatedBy() {
+		return nominatedBy;
+	}
+
+	public void setNominatedBy(Student nominatedBy) {
+		this.nominatedBy = nominatedBy;
+	}
+
+	public Faculty getApprovedBy() {
+		return approvedBy;
+	}
+
+	public void setApprovedBy(Faculty approvedBy) {
+		this.approvedBy = approvedBy;
+	}
+
+	public Position getPosition() {
+		return position;
+	}
+
+	public void setPosition(Position position) {
+		this.position = position;
+	}
+
+	@Override
+	public String toString() {
+		return "Candidate [studentEmailId=" + studentEmailId + ", programme=" + programme + ", graduatingYear="
+				+ graduatingYear + ", studentImage=" + studentImage + ", about=" + about + ", isEligible=" + isEligible
+				+ ", manifesto=" + manifesto + ", student=" + student + ", nominatedBy=" + nominatedBy + ", approvedBy="
+				+ approvedBy + ", position=" + position + "]";
+	}
+	
+	
 }

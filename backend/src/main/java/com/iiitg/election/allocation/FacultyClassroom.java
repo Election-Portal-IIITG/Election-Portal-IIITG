@@ -1,6 +1,7 @@
 package com.iiitg.election.allocation;
 
 import com.iiitg.election.annotations.ValidEmail;
+import com.iiitg.election.faculty.Faculty;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,9 +29,9 @@ public class FacultyClassroom {
 		super();
     }
 
-	public FacultyClassroom(String facultyEmailId, String classroomId, Classroom classroom) {
+	public FacultyClassroom(Faculty faculty, Classroom classroom) {
 		super();
-		this.facultyEmailId = facultyEmailId;
+		this.facultyEmailId = faculty.getEmailId();
 		this.classroom = classroom;
 	}
 
