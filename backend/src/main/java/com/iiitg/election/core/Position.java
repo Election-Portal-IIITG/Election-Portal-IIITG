@@ -40,9 +40,8 @@ public class Position {
 	}
 
 
-	public Position(String id, @NotNull(message = "Position Name cannot be null") String positionName) {
+	public Position(@NotNull(message = "Position Name cannot be null") String positionName) {
 		super();
-		this.id = id;
 		this.positionName = positionName;
 	}
 

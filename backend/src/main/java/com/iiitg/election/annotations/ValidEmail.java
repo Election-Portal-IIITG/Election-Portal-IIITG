@@ -9,7 +9,7 @@ import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 @Constraint(validatedBy = IIITGEmailValidator.class)
-@Target({ElementType.FIELD, ElementType.METHOD})
+@Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidEmail {
 	String message() default "Email must be from @iiitg.ac.in domain";
