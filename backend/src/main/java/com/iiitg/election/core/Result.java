@@ -42,11 +42,10 @@ public class Result {
 		super();
 	}
 
-	public Result(String id, @NotNull(message = "Roll Number cannot be null") String rollNumber,
+	public Result(@NotNull(message = "Roll Number cannot be null") String rollNumber,
 			@NotNull(message = "Name cannot be null") String name,
 			@NotNull(message = "Votes cannot be null") int voteCount) {
 		super();
-		this.id = id;
 		this.rollNumber = rollNumber;
 		this.name = name;
 		this.voteCount = voteCount;

@@ -1,59 +1,59 @@
 package com.iiitg.election.clr;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import com.iiitg.election.core.Election;
 import com.iiitg.election.core.Position;
+import com.iiitg.election.core.Result;
+import com.iiitg.election.core.Winner;
+import com.iiitg.election.core.jpa.ElectionSpringDataJpaRepository;
 import com.iiitg.election.core.jpa.PositionSpringDataJpaRepository;
-import com.iiitg.election.faculty.Faculty;
-import com.iiitg.election.faculty.jpa.FacultySpringDataJpaRepository;
-import com.iiitg.election.student.Candidate;
-import com.iiitg.election.student.Student;
-import com.iiitg.election.student.jpa.CandidateSpringDataJpaRepository;
-import com.iiitg.election.student.jpa.StudentSpringDataJpaRepository;
+import com.iiitg.election.core.jpa.ResultSpringDataJpaRepository;
+import com.iiitg.election.core.jpa.WinnerSpringDataJpaRepository;
 
 
 @Component
 public class JpaCLR implements CommandLineRunner{
 	
 	@Autowired
+	private ElectionSpringDataJpaRepository elecRepo;
+	
+	@Autowired
+	private ResultSpringDataJpaRepository resRepo;
+	
+	@Autowired
 	private PositionSpringDataJpaRepository posRepo;
 	
 	@Autowired
-	private StudentSpringDataJpaRepository stuRepo;
+	private WinnerSpringDataJpaRepository winRepo;
 	
-	@Autowired
-	private CandidateSpringDataJpaRepository canRepo;
-	
-	@Autowired
-	private FacultySpringDataJpaRepository facRepo;
 
 	@Override
 	public void run(String... args) throws Exception {
+		LocalDate date = LocalDate.now();
+		Election newElec = new Election(date, false);
+		elecRepo.save(newElec);
 		
-		Faculty fac1 = new Faculty("sanjay@iiitg.ac.in", "Sanjay", "Moulik", "DummyLoLoL", true);
-		facRepo.save(fac1);
+		Position president = new Position("President");
+		posRepo.save(president);
 		
-		Position presPos = new Position("President");
-		Position vicePresPos = new Position("Vice President");
+		Result newResult = new Result("2201097", "Ishaan Das", 690);
+		newResult.setElection(newElec);
+		newResult.setPosition(president);
+		resRepo.save(newResult);
 		
-		posRepo.save(presPos);
-		posRepo.save(vicePresPos);
+//		List<Result> all = resRepo.findByPosition_PositionName("President");
+//		List<Result> all = resRepo.findByElectionYear(2025);
+		List<Result> all = resRepo.findByElectionYearAndPositionName(2025, "Vice President");
 		
-		Student stu1 = new Student("abc@iiitg.ac.in", "Ishaan", "Das", "2201097" ,"DummyLoLOLOL", true, false);
-		Student stu2 = new Student("xyz@iiitg.ac.in", "Animesh", "Kumar", "2201024" ,"DummyLoLOLOL", true, false);
-		stuRepo.save(stu1);
-		stuRepo.save(stu2);
+		Winner newWinner = new Winner("abc@iiitg.ac.in", "2201097", "Ishaan Das", "Some Img Url", "B.Tech", president);
+		winRepo.save(newWinner);
 		
-		
-		Candidate pres1 = new Candidate("B.Tech", 2026, "some url", "some about", "some manifesto url");
-		Student foundStu = stuRepo.findByStudentEmailId("abc@iiitg.ac.in");
-		Position foundPresPos = posRepo.findByPositionName("President");
-		pres1.setStudent(foundStu);
-		pres1.setContestingPosition(foundPresPos);
-		canRepo.save(pres1);
-		
-		System.out.println(canRepo.findByContestingPosition_PositionName("President"));
+		System.out.println(winRepo.findByWinningPosition_PositionName("Vice President"));
 	}
 }

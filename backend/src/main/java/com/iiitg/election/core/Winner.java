@@ -21,7 +21,6 @@ public class Winner {
 	@GeneratedValue(strategy = GenerationType.UUID)
 	private String id;
 	
-	
 	@Email(message = "Invalid Email format")
 	@ValidEmail
 	@NotNull(message = "Email ID cannot be null")
@@ -29,8 +28,8 @@ public class Winner {
 	private String emailId;
 	
 	@NotNull(message = "Roll Number cannot be null")
-	@Column(name = "roll_no", nullable = false, unique = true)
-	private String rollNo;
+	@Column(name = "roll_number", nullable = false, unique = true)
+	private String rollNumber;
 	
 	@NotNull(message = "Name cannot be null")
 	@Column(name = "name", nullable = false)
@@ -46,12 +45,95 @@ public class Winner {
 	private String programme;
 	
 	
-//	Relationship with Positio table
+//	Relationship with Position table
 //	Many to one relationship with position using position_id
 //	One position can have many winners
 	@ManyToOne
 	@JoinColumn(name = "position_id")
 	private Position winningPosition;
-	
-	
+
+
+	public Winner() {
+		super();
+	}
+
+
+	public Winner(@Email(message = "Invalid Email format") @NotNull(message = "Email ID cannot be null") String emailId,
+			@NotNull(message = "Roll Number cannot be null") String rollNo,
+			@NotNull(message = "Name cannot be null") String name,
+			@NotNull(message = "Image URLcannot be null") String imageURL,
+			@NotNull(message = "Programme cannot be null") String programme, Position winningPosition) {
+		super();
+		this.emailId = emailId;
+		this.rollNumber = rollNo;
+		this.name = name;
+		this.imageURL = imageURL;
+		this.programme = programme;
+		this.winningPosition = winningPosition;
+	}
+
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getEmailId() {
+		return emailId;
+	}
+
+	public void setEmailId(String emailId) {
+		this.emailId = emailId;
+	}
+
+	public String getRollNo() {
+		return rollNumber;
+	}
+
+	public void setRollNo(String rollNo) {
+		this.rollNumber = rollNo;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getImageURL() {
+		return imageURL;
+	}
+
+	public void setImageURL(String imageURL) {
+		this.imageURL = imageURL;
+	}
+
+	public String getProgramme() {
+		return programme;
+	}
+
+	public void setProgramme(String programme) {
+		this.programme = programme;
+	}
+
+	public Position getWinningPosition() {
+		return winningPosition;
+	}
+
+	public void setWinningPosition(Position winningPosition) {
+		this.winningPosition = winningPosition;
+	}
+
+	@Override
+	public String toString() {
+		return "Winner [id=" + id + ", emailId=" + emailId + ", rollNo=" + rollNumber + ", name=" + name + ", imageURL="
+				+ imageURL + ", programme=" + programme + ", winningPosition=" + winningPosition + "]";
+	}
 }
+
+

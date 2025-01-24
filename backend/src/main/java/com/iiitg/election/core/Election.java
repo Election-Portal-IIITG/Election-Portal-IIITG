@@ -31,9 +31,12 @@ public class Election {
 	@OneToMany(mappedBy = "election")
 	private List<Result> results = new ArrayList<>();
 
-	public Election(String id, LocalDate electionDate, Boolean isComplete) {
+	public Election() {
 		super();
-		this.id = id;
+	}
+
+	public Election(LocalDate electionDate, Boolean isComplete) {
+		super();
 		this.electionDate = electionDate;
 		this.isComplete = isComplete;
 	}
