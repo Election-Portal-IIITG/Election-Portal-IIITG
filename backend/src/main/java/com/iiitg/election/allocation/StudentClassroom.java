@@ -13,7 +13,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 
-@Entity(name = "student_classroom")
+//@Entity(name = "student_classroom")
 public class StudentClassroom {
 	
 	@Id

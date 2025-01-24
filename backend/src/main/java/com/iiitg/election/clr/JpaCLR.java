@@ -17,7 +17,7 @@ import com.iiitg.election.faculty.jpa.FacultySpringDataJpaRepository;
 import com.iiitg.election.student.Student;
 import com.iiitg.election.student.jpa.StudentSpringDataJpaRepository;
 
-@Component
+//@Component
 public class JpaCLR implements CommandLineRunner{
 	
 	@Autowired

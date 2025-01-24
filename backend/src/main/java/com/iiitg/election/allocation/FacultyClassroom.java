@@ -11,7 +11,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 
-@Entity(name = "faculty_classroom")
+//@Entity(name = "faculty_classroom")
 public class FacultyClassroom {
 	
 	@Id

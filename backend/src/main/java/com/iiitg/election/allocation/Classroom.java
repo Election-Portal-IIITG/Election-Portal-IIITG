@@ -2,13 +2,14 @@ package com.iiitg.election.allocation;
 
 import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotNull;
 
-@Entity(name = "classroom")
+//@Entity(name = "classroom")
 public class Classroom {
 	
 	@Id
@@ -22,6 +23,7 @@ public class Classroom {
 	private boolean isAvailable;
 	
 	@OneToOne(mappedBy = "classroom")
+	@Column(name = "faculty_classroom")
 	private FacultyClassroom facultyClassroom;
 	
 	@OneToMany(mappedBy = "classroom")
