@@ -2,6 +2,7 @@ package com.iiitg.election.jwt;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPublicKey;
@@ -27,7 +28,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
-@Configuration
+//@Configuration
 public class JwtSecurityConfiguration {
 
 	@Bean

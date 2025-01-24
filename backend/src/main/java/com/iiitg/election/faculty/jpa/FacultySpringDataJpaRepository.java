@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.iiitg.election.faculty.Faculty;
 
-public interface FacultySpringDataJpaRepository extends JpaRepository<Faculty, String> {
-
-}
+//public interface FacultySpringDataJpaRepository extends JpaRepository<Faculty, String> {
+//
+//}

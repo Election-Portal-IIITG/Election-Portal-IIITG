@@ -8,7 +8,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.validation.constraints.NotNull;
 
-@Entity(name = "result")
+//@Entity(name = "result")
 public class Result {
 	
 	@EmbeddedId

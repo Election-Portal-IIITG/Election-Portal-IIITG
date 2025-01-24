@@ -10,7 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
 
-@Entity(name = "election")
+//@Entity(name = "election")
 public class Election {
 
 	@Id

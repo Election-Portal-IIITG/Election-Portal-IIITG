@@ -8,21 +8,27 @@ import com.iiitg.election.annotations.ValidEmail;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 
-@Entity(name = "student")
+@Entity
+@Table(name = "student")
 public class Student {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.UUID)
+	private String id;
+	
 	@Email(message = "Invalid email format")
 	@ValidEmail
 	@NotNull(message = "Email ID cannot be null")
-	@Column(name = "student_email_id", nullable = false, unique = true)
+	@Column(name = "student_email_id", unique = true)
 	private String studentEmailId;
 
 	@NotNull(message = "Firstname cannot be null")
@@ -33,7 +39,7 @@ public class Student {
 	private String lastName;
 	
 	@NotNull(message = "Roll Number cannot be null")
-	@Column(name = "roll_number", nullable = false, unique = true)
+	@Column(name = "roll_number", unique = true)
 	private String rollNumber;
 
 	@NotNull(message = "Password cannot be null")
@@ -48,10 +54,10 @@ public class Student {
 	@Column(name = "has_voted", nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
 	private boolean hasVoted;
 
-	@OneToOne(mappedBy = "student", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	private Candidate candidateProfile;
-
-	@OneToMany(mappedBy = "nominatedBy", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@OneToOne(mappedBy = "student", cascade = CascadeType.ALL)
+	private Candidate candidate;
+	
+	@OneToMany(mappedBy = "nominatedBy")
 	private List<Candidate> nominatedCandidates = new ArrayList<>();
 
 	public Student() {
@@ -64,7 +70,7 @@ public class Student {
 			@NotNull(message = "Roll Number cannot be null") String rollNumber,
 			@NotNull(message = "Password cannot be null") String password,
 			@NotNull(message = "On Campus cannot be null") boolean onCampus,
-			@NotNull(message = "Has Voted cannot be null") boolean hasVoted, Candidate candidateProfile) {
+			@NotNull(message = "Has Voted cannot be null") boolean hasVoted) {
 		super();
 		this.studentEmailId = studentEmailId;
 		this.firstName = firstName;
@@ -73,7 +79,14 @@ public class Student {
 		this.password = password;
 		this.onCampus = onCampus;
 		this.hasVoted = hasVoted;
-		this.candidateProfile = candidateProfile;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public String getStudentEmailId() {
@@ -104,8 +117,8 @@ public class Student {
 		return rollNumber;
 	}
 
-	public void setRollNumber(String rollNo) {
-		this.rollNumber = rollNo;
+	public void setRollNumber(String rollNumber) {
+		this.rollNumber = rollNumber;
 	}
 
 	public String getPassword() {
@@ -132,12 +145,12 @@ public class Student {
 		this.hasVoted = hasVoted;
 	}
 
-	public Candidate getCandidateProfile() {
-		return candidateProfile;
+	public Candidate getCandidate() {
+		return candidate;
 	}
 
-	public void setCandidateProfile(Candidate candidateProfile) {
-		this.candidateProfile = candidateProfile;
+	public void setCandidate(Candidate candidate) {
+		this.candidate = candidate;
 	}
 
 	public List<Candidate> getNominatedCandidates() {
@@ -150,10 +163,10 @@ public class Student {
 
 	@Override
 	public String toString() {
-		return "Student [studentEmailId=" + studentEmailId + ", firstName=" + firstName + ", lastName=" + lastName
-				+ ", Roll Number=" + rollNumber + ", password=" + password + ", onCampus=" + onCampus + ", hasVoted=" + hasVoted
-				+ ", candidateProfile=" + candidateProfile + ", nominatedCandidates=" + nominatedCandidates + "]";
+		return "Student [id=" + id + ", studentEmailId=" + studentEmailId + ", firstName=" + firstName + ", lastName="
+				+ lastName + ", rollNumber=" + rollNumber + ", password=" + password + ", onCampus=" + onCampus
+				+ ", hasVoted=" + hasVoted + "]";
 	}
 
-		
+			
 }

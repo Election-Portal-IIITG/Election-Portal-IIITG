@@ -7,20 +7,27 @@ import com.iiitg.election.student.Candidate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 
-@Entity(name = "faculty")
+@Entity
+@Table(name = "faculty")
 public class Faculty {
 	
 	@Id
+	@GeneratedValue(strategy = GenerationType.UUID)
+	private String id;
+	
 	@Email(message = "Invalid email format")
 	@ValidEmail
 	@NotNull(message = "Email ID cannot be null")
-	@Column(name = "email_id", nullable = false, unique = true)
-	private String emailId;
+	@Column(name = "faculty_email_id", unique = true)
+	private String facultyEmailId;
 	
 	
 	@NotNull(message = "Firstname cannot be null")
@@ -39,79 +46,119 @@ public class Faculty {
 	
 	@OneToMany(mappedBy = "approvedBy")
 	private List<Candidate> approvedCandidates;
+	
+	
 
 	public Faculty() {
 		super();
 	}
 
+
+
 	public Faculty(
-			@Email(message = "Invalid email format") @NotNull(message = "Email ID cannot be null") String emailId,
+			@Email(message = "Invalid email format") @NotNull(message = "Email ID cannot be null") String facultyEmailId,
 			@NotNull(message = "Firstname cannot be null") String firstName, String lastName,
-			@NotNull(message = "Password cannot be null") String password, boolean isAvailable,
-			List<Candidate> approvedCandidates) {
+			@NotNull(message = "Password cannot be null") String password, boolean isAvailable) {
 		super();
-		this.emailId = emailId;
+		this.facultyEmailId = facultyEmailId;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.password = password;
 		this.isAvailable = isAvailable;
-		this.approvedCandidates = approvedCandidates;
 	}
 
-	public String getEmailId() {
-		return emailId;
+
+
+	public String getId() {
+		return id;
 	}
 
-	public void setEmailId(String emailId) {
-		this.emailId = emailId;
+
+
+	public void setId(String id) {
+		this.id = id;
 	}
+
+
+
+	public String getFacultyEmailId() {
+		return facultyEmailId;
+	}
+
+
+
+	public void setFacultyEmailId(String facultyEmailId) {
+		this.facultyEmailId = facultyEmailId;
+	}
+
+
 
 	public String getFirstName() {
 		return firstName;
 	}
 
+
+
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
+
+
 
 	public String getLastName() {
 		return lastName;
 	}
 
+
+
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
+
+
 
 	public String getPassword() {
 		return password;
 	}
 
+
+
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
+
 
 	public boolean isAvailable() {
 		return isAvailable;
 	}
 
+
+
 	public void setAvailable(boolean isAvailable) {
 		this.isAvailable = isAvailable;
 	}
+
+
 
 	public List<Candidate> getApprovedCandidates() {
 		return approvedCandidates;
 	}
 
+
+
 	public void setApprovedCandidates(List<Candidate> approvedCandidates) {
 		this.approvedCandidates = approvedCandidates;
 	}
 
+
+
 	@Override
 	public String toString() {
-		return "Faculty [emailId=" + emailId + ", firstName=" + firstName + ", lastName=" + lastName + ", password="
-				+ password + ", isAvailable=" + isAvailable + ", approvedCandidates=" + approvedCandidates + "]";
+		return "Faculty [id=" + id + ", facultyEmailId=" + facultyEmailId + ", firstName=" + firstName + ", lastName="
+				+ lastName + ", password=" + password + "]";
 	}
+
 	
-	
-	
+		
 }

@@ -5,7 +5,7 @@ import java.util.Objects;
 
 import jakarta.persistence.Embeddable;
 
-@Embeddable
+//@Embeddable
 public class ResultId implements Serializable {
 
 	private String position_id;

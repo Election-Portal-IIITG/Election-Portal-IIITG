@@ -10,7 +10,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 
-@Entity(name = "winner")
+//@Entity(name = "winner")
 public class Winner {
 	
 	@Id
