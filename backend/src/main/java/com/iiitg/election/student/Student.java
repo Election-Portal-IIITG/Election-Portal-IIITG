@@ -25,8 +25,8 @@ public class Student {
 	@GeneratedValue(strategy = GenerationType.UUID)
 	private String id;
 	
-	@Email(message = "Invalid email format")
 	@ValidEmail
+	@Email(message = "Invalid email format")
 	@NotNull(message = "Email ID cannot be null")
 	@Column(name = "student_email_id", unique = true)
 	private String studentEmailId;
@@ -65,7 +65,7 @@ public class Student {
 	}
 
 	public Student(
-			@Email(message = "Invalid email format") @NotNull(message = "Email ID cannot be null") String studentEmailId,
+			@ValidEmail @Email(message = "Invalid email format") @NotNull(message = "Email ID cannot be null") String studentEmailId,
 			@NotNull(message = "Firstname cannot be null") String firstName, String lastName,
 			@NotNull(message = "Roll Number cannot be null") String rollNumber,
 			@NotNull(message = "Password cannot be null") String password,

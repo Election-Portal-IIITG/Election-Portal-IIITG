@@ -57,6 +57,9 @@ public class Candidate {
 	@JoinColumn(name = "nominator_id")
 	private Student nominatedBy;
 	
+	@Column(name = "is_nominated")
+	private Boolean isNominated;
+	
 //	Relationship with Faculty table
 //	Many to one realtionship with faculty using faculty_id
 //	One faculty can approve many candidates
@@ -64,6 +67,9 @@ public class Candidate {
 	@ManyToOne
 	@JoinColumn(name = "approver_id")
 	private Faculty approvedBy;
+	
+	@Column(name = "is_approved")
+	private Boolean isApproved;
 	
 //	Relationship with Faculty table
 //	Many to one relationship with position using position_id
@@ -80,13 +86,13 @@ public class Candidate {
 	public Candidate(@NotNull(message = "Programme cannot be null") String programme,
 			@NotNull(message = "Graduating Year cannot be null") int graduatingYear,
 			@NotNull(message = "Student Image cannot be null") String studentImageURL,
-			@NotNull(message = "About cannot be null") String about, Boolean isEligible, String manifestoURL) {
+			@NotNull(message = "About cannot be null") String about, String manifestoURL) {
 		super();
 		this.programme = programme;
 		this.graduatingYear = graduatingYear;
 		this.studentImageURL = studentImageURL;
 		this.about = about;
-		this.isEligible = isEligible;
+		this.isEligible = null;
 		this.manifestoURL = manifestoURL;
 	}
 
@@ -162,12 +168,28 @@ public class Candidate {
 		this.nominatedBy = nominatedBy;
 	}
 
+	public Boolean getIsNominated() {
+		return isNominated;
+	}
+
+	public void setIsNominated(Boolean isNominated) {
+		this.isNominated = isNominated;
+	}
+
 	public Faculty getApprovedBy() {
 		return approvedBy;
 	}
 
 	public void setApprovedBy(Faculty approvedBy) {
 		this.approvedBy = approvedBy;
+	}
+
+	public Boolean getIsApproved() {
+		return isApproved;
+	}
+
+	public void setIsApproved(Boolean isApproved) {
+		this.isApproved = isApproved;
 	}
 
 	public Position getContestingPosition() {
@@ -182,8 +204,8 @@ public class Candidate {
 	public String toString() {
 		return "Candidate [id=" + id + ", programme=" + programme + ", graduatingYear=" + graduatingYear
 				+ ", studentImageURL=" + studentImageURL + ", about=" + about + ", isEligible=" + isEligible
-				+ ", manifestoURL=" + manifestoURL + "]";
+				+ ", manifestoURL=" + manifestoURL + ", student=" + student + ", nominatedBy=" + nominatedBy
+				+ ", isNominated=" + isNominated + ", approvedBy=" + approvedBy + ", isApproved=" + isApproved
+				+ ", contestingPosition=" + contestingPosition + "]";
 	}
-	
-	
 }

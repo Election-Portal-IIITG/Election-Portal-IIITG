@@ -9,7 +9,6 @@ public class IIITGEmailValidator implements ConstraintValidator<ValidEmail, Stri
 	
 	@Override
 	public void initialize(ValidEmail constraintAnnotation) {
-		
 	}
 	
 	@Override
