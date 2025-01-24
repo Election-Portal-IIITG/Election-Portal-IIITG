@@ -3,61 +3,60 @@ package com.iiitg.election.core;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.validation.constraints.NotNull;
 
-//@Entity(name = "result")
+@Entity
 public class Result {
 	
-	@EmbeddedId
-	private ResultId id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.UUID)
+	private String id;
 	
 	@NotNull(message = "Roll Number cannot be null")
-	@Column(name = "roll_number", nullable = false, unique = true)
+	@Column(name = "roll_number", unique = true)
 	private String rollNumber;
 	
-	@NotNull(message = "Firstname cannot be null")
-	@Column(name = "first_name", nullable = false)
-	private String firstName;
-
-	@Column(name = "last_name")
-	private String lastName;
+	@NotNull(message = "Name cannot be null")
+	@Column(name = "name")
+	private String name;
 	
 	@NotNull(message = "Votes cannot be null")
-	private int votes;
+	@Column(name = "vote_count")
+	private int voteCount;
 	
 	@ManyToOne
-    @MapsId("position_id")
-    @JoinColumn(name = "position_id")
-    private Position position;
-    
-    @ManyToOne
-    @MapsId("election_id")
-    @JoinColumn(name = "election_id")
-    private Election election;
+	@JoinColumn(name = "position_id")
+	private Position position;
+	
+	@ManyToOne
+	@JoinColumn(name = "election_id")
+	private Election election;
 	
 	public Result() {
 		super();
 	}
 
-	public Result(ResultId id, @NotNull(message = "Roll Number cannot be null") String rollNumber,
-			@NotNull(message = "Firstname cannot be null") String firstName, String lastName,
-			@NotNull(message = "Votes cannot be null") int votes) {
+	public Result(String id, @NotNull(message = "Roll Number cannot be null") String rollNumber,
+			@NotNull(message = "Name cannot be null") String name,
+			@NotNull(message = "Votes cannot be null") int voteCount) {
 		super();
 		this.id = id;
 		this.rollNumber = rollNumber;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.votes = votes;
+		this.name = name;
+		this.voteCount = voteCount;
 	}
 
-	public ResultId getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(ResultId id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -69,30 +68,42 @@ public class Result {
 		this.rollNumber = rollNumber;
 	}
 
-	public String getFirstName() {
-		return firstName;
+	public String getName() {
+		return name;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public String getLastName() {
-		return lastName;
+	public int getVoteCount() {
+		return voteCount;
 	}
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
+	public void setVoteCount(int voteCount) {
+		this.voteCount = voteCount;
 	}
 
-	public int getVotes() {
-		return votes;
+	public Position getPosition() {
+		return position;
 	}
 
-	public void setVotes(int votes) {
-		this.votes = votes;
+	public void setPosition(Position position) {
+		this.position = position;
 	}
-	
+
+	public Election getElection() {
+		return election;
+	}
+
+	public void setElection(Election election) {
+		this.election = election;
+	}
+
+	@Override
+	public String toString() {
+		return "Result [id=" + id + ", rollNumber=" + rollNumber + ", name=" + name + ", voteCount=" + voteCount + "]";
+	}
 	
 	
 	

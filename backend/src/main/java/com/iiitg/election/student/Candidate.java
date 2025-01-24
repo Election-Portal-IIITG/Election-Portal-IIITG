@@ -65,7 +65,7 @@ public class Candidate {
 	@JoinColumn(name = "approver_id")
 	private Faculty approvedBy;
 	
-//	Relationship with Faculty table
+//	Relationship with Positio table
 //	Many to one relationship with position using position_id
 //	One position can have many candidates
 	@ManyToOne

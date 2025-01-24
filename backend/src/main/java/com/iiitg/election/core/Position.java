@@ -1,5 +1,6 @@
 package com.iiitg.election.core;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.iiitg.election.student.Candidate;
@@ -26,8 +27,13 @@ public class Position {
 	private String positionName;
 	
 	@OneToMany(mappedBy = "contestingPosition")
-	private List<Candidate> contestingCandidates;
-
+	private List<Candidate> contestingCandidates = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "winningPosition")
+	private List<Winner> winningCandidates = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "position")
+	private List<Result> results = new ArrayList<>();
 	
 	public Position() {
 		super();
@@ -68,6 +74,26 @@ public class Position {
 
 	public void setContestingCandidates(List<Candidate> contestingCandidates) {
 		this.contestingCandidates = contestingCandidates;
+	}
+
+
+	public List<Winner> getWinningCandidates() {
+		return winningCandidates;
+	}
+
+
+	public void setWinningCandidates(List<Winner> winningCandidates) {
+		this.winningCandidates = winningCandidates;
+	}
+
+
+	public List<Result> getResults() {
+		return results;
+	}
+
+
+	public void setResults(List<Result> results) {
+		this.results = results;
 	}
 
 
