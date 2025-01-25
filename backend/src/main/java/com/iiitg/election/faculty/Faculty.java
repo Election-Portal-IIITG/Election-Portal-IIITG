@@ -2,6 +2,8 @@ package com.iiitg.election.faculty;
 
 import java.util.List;
 
+import com.iiitg.election.allocation.Classroom;
+import com.iiitg.election.allocation.SlotClassroom;
 import com.iiitg.election.annotations.ValidEmail;
 import com.iiitg.election.student.Candidate;
 
@@ -11,6 +13,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -47,7 +50,8 @@ public class Faculty {
 	@OneToMany(mappedBy = "approvedBy")
 	private List<Candidate> approvedCandidates;
 	
-	
+	@OneToOne(mappedBy = "assignedFaculty")
+	private Classroom assignedClassroom;
 
 	public Faculty() {
 		super();
@@ -149,6 +153,20 @@ public class Faculty {
 
 	public void setApprovedCandidates(List<Candidate> approvedCandidates) {
 		this.approvedCandidates = approvedCandidates;
+	}
+
+	
+	
+
+
+	public Classroom getAssignedClassroom() {
+		return assignedClassroom;
+	}
+
+
+
+	public void setAssignedClassroom(Classroom assignedClassroom) {
+		this.assignedClassroom = assignedClassroom;
 	}
 
 

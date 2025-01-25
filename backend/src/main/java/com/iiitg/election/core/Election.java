@@ -1,7 +1,6 @@
 package com.iiitg.election.core;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +11,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "election")
@@ -30,6 +28,9 @@ public class Election {
 	
 	@OneToMany(mappedBy = "election")
 	private List<Result> results = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "winningElection")
+	private List<Winner> winners = new ArrayList<>();
 
 	public Election() {
 		super();
@@ -71,6 +72,14 @@ public class Election {
 
 	public void setResults(List<Result> results) {
 		this.results = results;
+	}
+
+	public List<Winner> getWinners() {
+		return winners;
+	}
+
+	public void setWinners(List<Winner> winners) {
+		this.winners = winners;
 	}
 
 	@Override

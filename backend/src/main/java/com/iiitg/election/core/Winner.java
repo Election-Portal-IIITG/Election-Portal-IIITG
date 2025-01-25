@@ -52,6 +52,9 @@ public class Winner {
 	@JoinColumn(name = "position_id")
 	private Position winningPosition;
 
+	@ManyToOne
+	@JoinColumn(name = "election_id")
+	private Election winningElection;
 
 	public Winner() {
 		super();
@@ -128,6 +131,26 @@ public class Winner {
 	public void setWinningPosition(Position winningPosition) {
 		this.winningPosition = winningPosition;
 	}
+
+	public String getRollNumber() {
+		return rollNumber;
+	}
+
+
+	public void setRollNumber(String rollNumber) {
+		this.rollNumber = rollNumber;
+	}
+
+
+	public Election getWinningElection() {
+		return winningElection;
+	}
+
+
+	public void setWinningElection(Election winningElection) {
+		this.winningElection = winningElection;
+	}
+
 
 	@Override
 	public String toString() {

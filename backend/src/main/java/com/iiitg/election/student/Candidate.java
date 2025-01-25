@@ -78,7 +78,6 @@ public class Candidate {
 	@JoinColumn(name = "position_id")
 	private Position contestingPosition;
 	
-	
 	public Candidate() {
         super();
     }

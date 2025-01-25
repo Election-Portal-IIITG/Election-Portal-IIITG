@@ -2,3 +2,4 @@
 .project
 bin/
 .vscode
+.DS_Store

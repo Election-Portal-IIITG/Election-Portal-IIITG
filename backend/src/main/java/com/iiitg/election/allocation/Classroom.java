@@ -1,80 +1,106 @@
 package com.iiitg.election.allocation;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.iiitg.election.faculty.Faculty;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
-//@Entity(name = "classroom")
+@Entity
+@Table(name = "classroom")
 public class Classroom {
 	
 	@Id
-	@NotNull(message = "Classroom ID cannot be null")
-	private String classroomId;
+	@GeneratedValue(strategy = GenerationType.UUID)
+	private String id;
 	
 	@NotNull(message = "Capacity cannot be null")
+	@Column(name = "capacity")
 	private int capacity;
 	
 	@NotNull(message = "Availability cannnot be null")
+	@Column(name = "is_available")
 	private boolean isAvailable;
 	
-	@OneToOne(mappedBy = "classroom")
-	@Column(name = "faculty_classroom")
-	private FacultyClassroom facultyClassroom;
+	@OneToOne
+	@JoinColumn(name = "assigned_faculty_id")
+	private Faculty assignedFaculty;
 	
 	@OneToMany(mappedBy = "classroom")
-	private List<StudentClassroom> studentClassrooms;
+	private List<SlotClassroom> classroomSlots = new ArrayList<>();
+	
 	
 	public Classroom() {
 		super();
 	}
-	
-	public Classroom(String classroomId, int capacity, boolean is_available) {
+
+	public Classroom(String id, @NotNull(message = "Capacity cannot be null") int capacity,
+			@NotNull(message = "Availability cannnot be null") boolean isAvailable) {
 		super();
-		this.classroomId = classroomId;
+		this.id = id;
 		this.capacity = capacity;
-		this.isAvailable = is_available;
+		this.isAvailable = isAvailable;
 	}
 
-	public String getClassroomId() {
-		return classroomId;
+
+	public String getId() {
+		return id;
 	}
 
-	public void setClassroomId(String classroomId) {
-		this.classroomId = classroomId;
+
+	public void setId(String id) {
+		this.id = id;
 	}
+
 
 	public int getCapacity() {
 		return capacity;
 	}
 
+
 	public void setCapacity(int capacity) {
 		this.capacity = capacity;
 	}
 
-	public boolean isIs_available() {
+
+	public boolean isAvailable() {
 		return isAvailable;
 	}
 
-	public void setIs_available(boolean is_available) {
-		this.isAvailable = is_available;
+
+	public void setAvailable(boolean isAvailable) {
+		this.isAvailable = isAvailable;
 	}
 	
-	public FacultyClassroom getFacultyClassroom() {
-        return facultyClassroom;
-    }
+	public Faculty getAssignedFaculty() {
+		return assignedFaculty;
+	}
 
-    public void setFacultyClassroom(FacultyClassroom facultyClassroom) {
-        this.facultyClassroom = facultyClassroom;
-    }
+	public void setAssignedFaculty(Faculty assignedFaculty) {
+		this.assignedFaculty = assignedFaculty;
+	}
+
+	public List<SlotClassroom> getClassroomSlots() {
+		return classroomSlots;
+	}
+
+	public void setClassroomSlots(List<SlotClassroom> classroomSlots) {
+		this.classroomSlots = classroomSlots;
+	}
 
 	@Override
 	public String toString() {
-		return "Classroom [classroomId=" + classroomId + ", is_available=" + isAvailable +  ", capacity=" + capacity + "]";
+		return "Classroom [id=" + id + ", capacity=" + capacity + ", isAvailable=" + isAvailable + "]";
 	}
 	
 	

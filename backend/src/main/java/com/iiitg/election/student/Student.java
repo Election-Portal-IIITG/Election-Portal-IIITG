@@ -3,6 +3,7 @@ package com.iiitg.election.student;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.iiitg.election.allocation.SlotClassroom;
 import com.iiitg.election.annotations.ValidEmail;
 
 import jakarta.persistence.CascadeType;
@@ -11,6 +12,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -59,6 +62,10 @@ public class Student {
 	
 	@OneToMany(mappedBy = "nominatedBy")
 	private List<Candidate> nominatedCandidates = new ArrayList<>();
+	
+	@ManyToOne
+	@JoinColumn(name = "slot_classroom_id")
+	private SlotClassroom slotClassroom;
 
 	public Student() {
 		super();
