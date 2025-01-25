@@ -54,6 +54,7 @@ public class JpaCLR implements CommandLineRunner{
 		Winner newWinner = new Winner("abc@iiitg.ac.in", "2201097", "Ishaan Das", "Some Img Url", "B.Tech", president);
 		winRepo.save(newWinner);
 		
-		System.out.println(winRepo.findByWinningPosition_PositionName("Vice President"));
+		System.out.println(resRepo.findByElectionYearAndPositionName(2025, "President"));
+		
 	}
 }
