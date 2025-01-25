@@ -23,5 +23,43 @@ public class SlotClassroom {
 	@ManyToOne
 	@JoinColumn(name = "slot_id")
 	private Slot slot;
-	
+
+	public SlotClassroom() {
+		super();
+	}
+
+	public SlotClassroom(Classroom classroom, Slot slot) {
+		super();
+		this.classroom = classroom;
+		this.slot = slot;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public Classroom getClassroom() {
+		return classroom;
+	}
+
+	public void setClassroom(Classroom classroom) {
+		this.classroom = classroom;
+	}
+
+	public Slot getSlot() {
+		return slot;
+	}
+
+	public void setSlot(Slot slot) {
+		this.slot = slot;
+	}
+
+	@Override
+	public String toString() {
+		return "SlotClassroom [id=" + id + ", classroom=" + classroom + ", slot=" + slot + "]";
+	}
 }

@@ -24,6 +24,10 @@ public class Classroom {
 	@GeneratedValue(strategy = GenerationType.UUID)
 	private String id;
 	
+	@NotNull(message = "Classroom Name cannot be null")
+	@Column(name = "classroom_name")
+	private String classroomName;
+	
 	@NotNull(message = "Capacity cannot be null")
 	@Column(name = "capacity")
 	private int capacity;
@@ -44,14 +48,14 @@ public class Classroom {
 		super();
 	}
 
-	public Classroom(String id, @NotNull(message = "Capacity cannot be null") int capacity,
+	public Classroom(@NotNull(message = "Classroom Name cannot be null") String classroomName,
+			@NotNull(message = "Capacity cannot be null") int capacity,
 			@NotNull(message = "Availability cannnot be null") boolean isAvailable) {
 		super();
-		this.id = id;
+		this.classroomName = classroomName;
 		this.capacity = capacity;
 		this.isAvailable = isAvailable;
 	}
-
 
 	public String getId() {
 		return id;
@@ -100,8 +104,10 @@ public class Classroom {
 
 	@Override
 	public String toString() {
-		return "Classroom [id=" + id + ", capacity=" + capacity + ", isAvailable=" + isAvailable + "]";
+		return "Classroom [id=" + id + ", classroomName=" + classroomName + ", capacity=" + capacity + ", isAvailable="
+				+ isAvailable + ", assignedFaculty=" + assignedFaculty + "]";
 	}
-	
+
+
 	
 }

@@ -3,7 +3,6 @@ package com.iiitg.election.faculty;
 import java.util.List;
 
 import com.iiitg.election.allocation.Classroom;
-import com.iiitg.election.allocation.SlotClassroom;
 import com.iiitg.election.annotations.ValidEmail;
 import com.iiitg.election.student.Candidate;
 
@@ -57,8 +56,6 @@ public class Faculty {
 		super();
 	}
 
-
-
 	public Faculty(
 			@Email(message = "Invalid email format") @NotNull(message = "Email ID cannot be null") String facultyEmailId,
 			@NotNull(message = "Firstname cannot be null") String firstName, String lastName,
@@ -72,11 +69,9 @@ public class Faculty {
 	}
 
 
-
 	public String getId() {
 		return id;
 	}
-
 
 
 	public void setId(String id) {
@@ -84,11 +79,9 @@ public class Faculty {
 	}
 
 
-
 	public String getFacultyEmailId() {
 		return facultyEmailId;
 	}
-
 
 
 	public void setFacultyEmailId(String facultyEmailId) {
@@ -96,11 +89,9 @@ public class Faculty {
 	}
 
 
-
 	public String getFirstName() {
 		return firstName;
 	}
-
 
 
 	public void setFirstName(String firstName) {
@@ -108,11 +99,9 @@ public class Faculty {
 	}
 
 
-
 	public String getLastName() {
 		return lastName;
 	}
-
 
 
 	public void setLastName(String lastName) {
@@ -120,11 +109,9 @@ public class Faculty {
 	}
 
 
-
 	public String getPassword() {
 		return password;
 	}
-
 
 
 	public void setPassword(String password) {
@@ -132,11 +119,9 @@ public class Faculty {
 	}
 
 
-
 	public boolean isAvailable() {
 		return isAvailable;
 	}
-
 
 
 	public void setAvailable(boolean isAvailable) {
@@ -144,11 +129,9 @@ public class Faculty {
 	}
 
 
-
 	public List<Candidate> getApprovedCandidates() {
 		return approvedCandidates;
 	}
-
 
 
 	public void setApprovedCandidates(List<Candidate> approvedCandidates) {
@@ -156,15 +139,11 @@ public class Faculty {
 	}
 
 	
-	
-
-
 	public Classroom getAssignedClassroom() {
 		return assignedClassroom;
 	}
 
-
-
+	
 	public void setAssignedClassroom(Classroom assignedClassroom) {
 		this.assignedClassroom = assignedClassroom;
 	}

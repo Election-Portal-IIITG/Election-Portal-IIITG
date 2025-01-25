@@ -168,6 +168,14 @@ public class Student {
 		this.nominatedCandidates = nominatedCandidates;
 	}
 
+	public SlotClassroom getSlotClassroom() {
+		return slotClassroom;
+	}
+
+	public void setSlotClassroom(SlotClassroom slotClassroom) {
+		this.slotClassroom = slotClassroom;
+	}
+
 	@Override
 	public String toString() {
 		return "Student [id=" + id + ", studentEmailId=" + studentEmailId + ", firstName=" + firstName + ", lastName="
