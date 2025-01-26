@@ -4,6 +4,8 @@ import com.iiitg.election.annotations.ValidEmail;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -12,13 +14,22 @@ import jakarta.validation.constraints.NotNull;
 public class ElectionManager {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.UUID)
+	private String id;
+	
 	@Email(message = "Invalid email format")
 	@ValidEmail
 	@NotNull(message = "Email ID cannot be null")
-	@Column(name = "manager_email_id", nullable = false, unique = true)
+	@Column(name = "manager_email_id", unique = true)
 	private String managerEmailId;
 	
+	@NotNull(message = "password cannot be null")
+	@Column(name = "password")
 	private String password;
+	
+	public ElectionManager() {
+		super();
+	}
 	
 	public ElectionManager(String emailId, String password) {
 		super();
@@ -26,12 +37,20 @@ public class ElectionManager {
 		this.password = password;
 	}
 
-	public String getEmailId() {
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getManagerEmailId() {
 		return managerEmailId;
 	}
 
-	public void setEmailId(String emailId) {
-		this.managerEmailId = emailId;
+	public void setManagerEmailId(String managerEmailId) {
+		this.managerEmailId = managerEmailId;
 	}
 
 	public String getPassword() {
@@ -44,6 +63,8 @@ public class ElectionManager {
 
 	@Override
 	public String toString() {
-		return "ElectionManager [emailId=" + managerEmailId + ", password=" + password + "]";
-	}	
+		return "ElectionManager [id=" + id + ", managerEmailId=" + managerEmailId + ", password=" + password + "]";
+	}
+
+		
 }

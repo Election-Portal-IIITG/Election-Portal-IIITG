@@ -15,6 +15,8 @@ import com.iiitg.election.core.jpa.ElectionSpringDataJpaRepository;
 import com.iiitg.election.core.jpa.PositionSpringDataJpaRepository;
 import com.iiitg.election.core.jpa.ResultSpringDataJpaRepository;
 import com.iiitg.election.core.jpa.WinnerSpringDataJpaRepository;
+import com.iiitg.election.electionManager.ElectionManager;
+import com.iiitg.election.electionManager.jpa.ElectionManagerSpringDataJpaRepository;
 
 
 @Component
@@ -31,6 +33,9 @@ public class JpaCLR implements CommandLineRunner{
 	
 	@Autowired
 	private WinnerSpringDataJpaRepository winRepo;
+	
+	@Autowired
+	private ElectionManagerSpringDataJpaRepository manRepo;
 	
 
 	@Override
@@ -55,6 +60,11 @@ public class JpaCLR implements CommandLineRunner{
 		winRepo.save(newWinner);
 		
 		System.out.println(resRepo.findByElectionYearAndPositionName(2025, "President"));
+		
+		ElectionManager man1 = new ElectionManager("sgc@iiitg.ac.in", "abc");
+		manRepo.save(man1);
+		
+		System.out.println(manRepo.findByManagerEmailId("sgc@iiitg.ac.in"));
 		
 	}
 }

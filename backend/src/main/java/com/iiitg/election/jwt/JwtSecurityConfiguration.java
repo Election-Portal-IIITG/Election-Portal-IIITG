@@ -2,7 +2,6 @@ package com.iiitg.election.jwt;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
-
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPublicKey;
@@ -11,7 +10,6 @@ import java.util.UUID;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -35,13 +33,18 @@ public class JwtSecurityConfiguration {
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		
 		// Authorizing all requests - any incoming request must be authenticated
-		http.authorizeHttpRequests(requests -> requests.anyRequest().authenticated());
+//		http.authorizeHttpRequests(requests -> requests.anyRequest().authenticated());
+		http.authorizeHttpRequests(requests -> 
+        requests
+            .requestMatchers("authenticate").permitAll() // Allow authentication endpoint
+            .anyRequest().authenticated());
 
 		// Disabling session - enforcing state-less session management
 		http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
 		// Enabling basic HTTP authentication for the requests
-		http.httpBasic(withDefaults());
+//		http.httpBasic(withDefaults());
+		http.httpBasic(httpBasic -> httpBasic.disable());
 		
 		// Disabling CSRF - not needed for state-less REST APIs
 		http.csrf(csrf -> csrf.disable());
@@ -58,6 +61,21 @@ public class JwtSecurityConfiguration {
 		// Building and returning the HttpSecurity configuration
 		return http.build();
 	}
+	
+//	@Bean
+//	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//	    http.authorizeHttpRequests(requests -> 
+//	        requests
+//	            .requestMatchers("/authenticate").permitAll() // Allow authentication endpoint
+//	            .anyRequest().authenticated()
+//	    )
+//	    .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//	    .csrf(csrf -> csrf.disable())
+//	    .httpBasic(httpBasic -> httpBasic.disable()) // Disable Basic Authentication
+//	    .oauth2ResourceServer((oauth2) -> oauth2.jwt(withDefaults()));
+//
+//	    return http.build();
+//	}
 	
 	@Bean
 	public UserDetailsService userDetailService() {
