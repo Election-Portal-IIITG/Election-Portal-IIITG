@@ -1,13 +1,13 @@
 package com.iiitg.election.clr;
 
 import java.time.LocalDateTime;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-<<<<<<< HEAD
 import com.iiitg.election.allocation.Classroom;
 import com.iiitg.election.allocation.Slot;
 import com.iiitg.election.allocation.SlotClassroom;
@@ -18,7 +18,6 @@ import com.iiitg.election.faculty.Faculty;
 import com.iiitg.election.faculty.jpa.FacultySpringDataJpaRepository;
 import com.iiitg.election.student.Student;
 import com.iiitg.election.student.jpa.StudentSpringDataJpaRepository;
-=======
 import com.iiitg.election.core.Election;
 import com.iiitg.election.core.Position;
 import com.iiitg.election.core.Result;
@@ -29,7 +28,7 @@ import com.iiitg.election.core.jpa.ResultSpringDataJpaRepository;
 import com.iiitg.election.core.jpa.WinnerSpringDataJpaRepository;
 import com.iiitg.election.electionManager.ElectionManager;
 import com.iiitg.election.electionManager.jpa.ElectionManagerSpringDataJpaRepository;
->>>>>>> refactor/db-schema
+
 
 
 @Component
