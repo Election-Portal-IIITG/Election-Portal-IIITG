@@ -1,2 +1,0 @@
-INSERT INTO election_manager (id, manager_email_id, password) VALUES ('abc', 'elections@iiitg.ac.in', 'dummyLoLoL');
-INSERT INTO election_manager (id, manager_email_id, password) VALUES ('adef', 'def@iiitg.ac.in', '$2a$12$3PE8djUjNmXfhA1ysx6.tOjUfXOs0uhGuIFbkLf1lLsSuE8.Kdlme');

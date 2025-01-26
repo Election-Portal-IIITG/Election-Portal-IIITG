@@ -3,6 +3,8 @@ package com.iiitg.election.allocation;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.iiitg.election.faculty.Faculty;
 
 import jakarta.persistence.Column;
@@ -18,6 +20,7 @@ import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "classroom")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Classroom {
 	
 	@Id
@@ -61,11 +64,17 @@ public class Classroom {
 		return id;
 	}
 
-
 	public void setId(String id) {
 		this.id = id;
 	}
 
+	public String getClassroomName() {
+		return classroomName;
+	}
+
+	public void setClassroomName(String classroomName) {
+		this.classroomName = classroomName;
+	}
 
 	public int getCapacity() {
 		return capacity;

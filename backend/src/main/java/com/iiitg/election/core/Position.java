@@ -3,6 +3,8 @@ package com.iiitg.election.core;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.iiitg.election.student.Candidate;
 
 import jakarta.persistence.Column;
@@ -16,6 +18,7 @@ import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "election_position")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Position {
 
 	@Id

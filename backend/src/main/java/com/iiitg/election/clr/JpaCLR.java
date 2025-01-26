@@ -1,7 +1,6 @@
 package com.iiitg.election.clr;
 
 import java.time.LocalDateTime;
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,20 +13,12 @@ import com.iiitg.election.allocation.SlotClassroom;
 import com.iiitg.election.allocation.jpa.ClassroomSpringDataJpaRepository;
 import com.iiitg.election.allocation.jpa.SlotClassroomSpringDataJpaRepository;
 import com.iiitg.election.allocation.jpa.SlotSpringDataJpaRepository;
+import com.iiitg.election.electionManager.ElectionManager;
+import com.iiitg.election.electionManager.jpa.ElectionManagerSpringDataJpaRepository;
 import com.iiitg.election.faculty.Faculty;
 import com.iiitg.election.faculty.jpa.FacultySpringDataJpaRepository;
 import com.iiitg.election.student.Student;
 import com.iiitg.election.student.jpa.StudentSpringDataJpaRepository;
-import com.iiitg.election.core.Election;
-import com.iiitg.election.core.Position;
-import com.iiitg.election.core.Result;
-import com.iiitg.election.core.Winner;
-import com.iiitg.election.core.jpa.ElectionSpringDataJpaRepository;
-import com.iiitg.election.core.jpa.PositionSpringDataJpaRepository;
-import com.iiitg.election.core.jpa.ResultSpringDataJpaRepository;
-import com.iiitg.election.core.jpa.WinnerSpringDataJpaRepository;
-import com.iiitg.election.electionManager.ElectionManager;
-import com.iiitg.election.electionManager.jpa.ElectionManagerSpringDataJpaRepository;
 
 
 
@@ -52,9 +43,14 @@ public class JpaCLR implements CommandLineRunner{
 	@Autowired
 	private ElectionManagerSpringDataJpaRepository manRepo;
 	
+	@Autowired
+	private ElectionManagerSpringDataJpaRepository elecManRepo;
+	
 
 	@Override
 	public void run(String... args) throws Exception {
+		elecManRepo.save(new ElectionManager("def@iiitg.ac.in", "$2a$12$3PE8djUjNmXfhA1ysx6.tOjUfXOs0uhGuIFbkLf1lLsSuE8.Kdlme"));
+		
 		//Adding class
 		Classroom lg1 = new Classroom("LG1", 120, true);
 		Classroom lg2 = new Classroom("LG2", 120, true);

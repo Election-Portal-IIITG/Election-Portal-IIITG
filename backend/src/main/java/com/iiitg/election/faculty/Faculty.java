@@ -2,6 +2,8 @@ package com.iiitg.election.faculty;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.iiitg.election.allocation.Classroom;
 import com.iiitg.election.annotations.ValidEmail;
 import com.iiitg.election.student.Candidate;
@@ -19,6 +21,7 @@ import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "faculty")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Faculty {
 	
 	@Id

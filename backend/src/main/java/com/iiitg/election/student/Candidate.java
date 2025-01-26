@@ -1,5 +1,7 @@
 package com.iiitg.election.student;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.iiitg.election.core.Position;
 import com.iiitg.election.faculty.Faculty;
 
@@ -16,6 +18,7 @@ import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "candidate")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Candidate {
 	
 	@Id

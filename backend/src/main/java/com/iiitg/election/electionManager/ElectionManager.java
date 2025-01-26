@@ -1,5 +1,7 @@
 package com.iiitg.election.electionManager;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.iiitg.election.annotations.ValidEmail;
 
 import jakarta.persistence.Column;
@@ -11,6 +13,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 
 @Entity(name = "election_manager")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class ElectionManager {
 
 	@Id
