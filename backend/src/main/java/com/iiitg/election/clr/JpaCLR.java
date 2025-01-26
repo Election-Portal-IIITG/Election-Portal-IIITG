@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+<<<<<<< HEAD
 import com.iiitg.election.allocation.Classroom;
 import com.iiitg.election.allocation.Slot;
 import com.iiitg.election.allocation.SlotClassroom;
@@ -17,6 +18,18 @@ import com.iiitg.election.faculty.Faculty;
 import com.iiitg.election.faculty.jpa.FacultySpringDataJpaRepository;
 import com.iiitg.election.student.Student;
 import com.iiitg.election.student.jpa.StudentSpringDataJpaRepository;
+=======
+import com.iiitg.election.core.Election;
+import com.iiitg.election.core.Position;
+import com.iiitg.election.core.Result;
+import com.iiitg.election.core.Winner;
+import com.iiitg.election.core.jpa.ElectionSpringDataJpaRepository;
+import com.iiitg.election.core.jpa.PositionSpringDataJpaRepository;
+import com.iiitg.election.core.jpa.ResultSpringDataJpaRepository;
+import com.iiitg.election.core.jpa.WinnerSpringDataJpaRepository;
+import com.iiitg.election.electionManager.ElectionManager;
+import com.iiitg.election.electionManager.jpa.ElectionManagerSpringDataJpaRepository;
+>>>>>>> refactor/db-schema
 
 
 @Component
@@ -36,6 +49,9 @@ public class JpaCLR implements CommandLineRunner{
 	
 	@Autowired
 	private StudentSpringDataJpaRepository stuRepo;
+	
+	@Autowired
+	private ElectionManagerSpringDataJpaRepository manRepo;
 	
 
 	@Override
@@ -143,5 +159,10 @@ public class JpaCLR implements CommandLineRunner{
 		
 		SlotClassroom slotClsOfParticularStudent = slotClsRepo.findByStudentEmailId("abcd@iiitg.ac.in");
 		System.out.println(slotClsOfParticularStudent);
+		ElectionManager man1 = new ElectionManager("sgc@iiitg.ac.in", "abc");
+		manRepo.save(man1);
+		
+		System.out.println(manRepo.findByManagerEmailId("sgc@iiitg.ac.in"));
+		
 	}
 }

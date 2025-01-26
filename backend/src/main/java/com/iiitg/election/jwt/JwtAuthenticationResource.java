@@ -3,11 +3,13 @@ package com.iiitg.election.jwt;
 import java.time.Instant;
 import java.util.stream.Collectors;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 //@RestController
@@ -24,9 +26,26 @@ public class JwtAuthenticationResource {
 
 	@PostMapping("/authenticate")
 	public JwtResponse authenticate(Authentication authentication) {
+		System.out.println("Hello");
 		System.out.println("Authentication" + authentication);
 		return new JwtResponse(createToken(authentication));
 	}
+	
+//	@PostMapping("/authenticate")
+//	public JwtResponse authenticate(@RequestBody LoginRequest loginRequest) {
+//		System.out.println("loginrequest" + loginRequest);
+//	    // Manually create authentication
+//	    Authentication authentication = authenticationManager.authenticate(
+//	        new UsernamePasswordAuthenticationToken(
+//	            loginRequest.username(), 
+//	            loginRequest.password()
+//	        )
+//	    );
+//	    return new JwtResponse(createToken(authentication));
+//	}
+
+	// Add this record
+	record LoginRequest(String username, String password) {}
 
 
 
@@ -34,7 +53,7 @@ public class JwtAuthenticationResource {
 		var claims = JwtClaimsSet.builder()
 			.issuer("self")
 			.issuedAt(Instant.now())
-			.expiresAt(Instant.now().plusSeconds(60 * 30))
+			.expiresAt(Instant.now().plusSeconds(60 * 60))
 			.subject(authentication.getName())
 			.claim("scope", createScope(authentication))
 			.build();
