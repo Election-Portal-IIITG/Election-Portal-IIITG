@@ -1,4 +1,4 @@
-package com.iiitg.election.electionManager;
+package com.iiitg.election.student;
 
 import java.util.Collection;
 import java.util.List;
@@ -7,31 +7,32 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-public class ElectionManagerUser implements UserDetails {
+public class StudentUser implements UserDetails {
 	
-	private ElectionManager manager;
+	private Student student;
 	
-	public ElectionManagerUser(ElectionManager manager) {
+	public StudentUser(Student student) {
 		super();
-		this.manager = manager;
+		this.student = student;
 	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		// TODO Auto-generated method stub
-		return List.of(new SimpleGrantedAuthority("ROLE_ELECTION_MANAGER"));
+		return List.of(new SimpleGrantedAuthority("USER"));
 	}
 
 	@Override
 	public String getPassword() {
 		// TODO Auto-generated method stub
-		return manager.getPassword(); 
+		return student.getPassword();
 	}
 
 	@Override
 	public String getUsername() {
 		// TODO Auto-generated method stub
-		return manager.getManagerEmailId();
+		return student.getStudentEmailId();
+		
 	}
 
 }
