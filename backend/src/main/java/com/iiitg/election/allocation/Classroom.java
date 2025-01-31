@@ -28,7 +28,7 @@ public class Classroom {
 	private String id;
 	
 	@NotNull(message = "Classroom Name cannot be null")
-	@Column(name = "classroom_name")
+	@Column(name = "classroom_name", unique = true)
 	private String classroomName;
 	
 	@NotNull(message = "Capacity cannot be null")
@@ -110,6 +110,8 @@ public class Classroom {
 	public void setClassroomSlots(List<SlotClassroom> classroomSlots) {
 		this.classroomSlots = classroomSlots;
 	}
+	
+	
 
 	@Override
 	public String toString() {
