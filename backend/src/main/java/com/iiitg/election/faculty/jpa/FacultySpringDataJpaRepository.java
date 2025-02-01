@@ -11,8 +11,7 @@ public interface FacultySpringDataJpaRepository extends JpaRepository<Faculty, S
 	
 	Faculty findByFacultyEmailId(String facultyEmailId);
 	
-	List<Faculty> findByIsAvailableTrue();
-	List<Faculty> findByIsAvailableFalse();
+	List<Faculty> findByIsAvailable(Boolean isAvailable);
 	
 	Faculty findByAssignedClassroom_ClassroomName(String classroomName);
 

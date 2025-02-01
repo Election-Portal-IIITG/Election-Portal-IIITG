@@ -13,6 +13,7 @@ import com.iiitg.election.allocation.SlotClassroom;
 import com.iiitg.election.allocation.jpa.ClassroomSpringDataJpaRepository;
 import com.iiitg.election.allocation.jpa.SlotClassroomSpringDataJpaRepository;
 import com.iiitg.election.allocation.jpa.SlotSpringDataJpaRepository;
+import com.iiitg.election.allocation.service.AllocationService;
 import com.iiitg.election.electionManager.ElectionManager;
 import com.iiitg.election.electionManager.jpa.ElectionManagerSpringDataJpaRepository;
 import com.iiitg.election.faculty.Faculty;
@@ -46,56 +47,45 @@ public class JpaCLR implements CommandLineRunner{
 	@Autowired
 	private ElectionManagerSpringDataJpaRepository elecManRepo;
 	
+	@Autowired
+	private AllocationService allocationService;
+	
 
 	@Override
 	public void run(String... args) throws Exception {
 		elecManRepo.save(new ElectionManager("def@iiitg.ac.in", "$2a$12$3PE8djUjNmXfhA1ysx6.tOjUfXOs0uhGuIFbkLf1lLsSuE8.Kdlme"));
 		
 		//Adding class
-		Classroom lg1 = new Classroom("LG1", 120, true);
-		Classroom lg2 = new Classroom("LG2", 120, true);
-		Classroom c13 = new Classroom("C13", 70, true);
+		Classroom lg1 = new Classroom("LG1", 3, true);
+		Classroom lg2 = new Classroom("LG2", 2, true);
+		Classroom c13 = new Classroom("C13", 1, true);
+		Classroom c56 = new Classroom("C56", 1, false);
 		
 		clsRepo.save(lg1);
 		clsRepo.save(lg2);
 		clsRepo.save(c13);
+		clsRepo.save(c56);
 		
 		
 		//Creating time-stamps
-		LocalDateTime s1Start = LocalDateTime.of(2025, 01, 12, 5, 0);
-		LocalDateTime s1End = LocalDateTime.of(2025, 01, 12, 5, 15);
-		
-		LocalDateTime s2Start = LocalDateTime.of(2025, 01, 12, 6, 30);
-		LocalDateTime s2End = LocalDateTime.of(2025, 01, 12, 6, 45);	
-		
-		
-		//Adding slots
-		Slot s1 = new Slot(s1Start, s1End);
-		Slot s2 = new Slot(s2Start, s2End);
-		slotRepo.save(s1);
-		slotRepo.save(s2);
-		
-		//Mapping slots and classroom
-		SlotClassroom lg1S1 = new SlotClassroom(lg1, s1);
-		SlotClassroom lg1S2 = new SlotClassroom(lg1, s2);
-		SlotClassroom lg2S1 = new SlotClassroom(lg2, s1);
-		SlotClassroom c13S1 = new SlotClassroom(c13, s1);
-		
-		slotClsRepo.save(lg1S1);
-		slotClsRepo.save(lg1S2);
-		slotClsRepo.save(lg2S1);
-		slotClsRepo.save(c13S1);
+		LocalDateTime votingStartTime = LocalDateTime.of(2025, 02, 05, 17, 0);
+		int slotDuration = 15;
+		int gapDuration = 20;
 		
 		
 		//Creating Faculty
 		Faculty f1 = new Faculty("matam@iiitg.ac.in", "Rakesh", "Matam", "DummyLOLOL", true);
-		Faculty f2 = new Faculty("sanjay@iiitg.ac.in", "Sanjay", "Moulik", "DummyLOLOL", true);
+		Faculty f2 = new Faculty("sanjay@iiitg.ac.in", "Sanjay", "Moulik", "DummyLOLOL", false);
 		Faculty f3 = new Faculty("nilotpal@iiitg.ac.in", "Nilotpal", "Chakroborty", "DummyLOLOL", true);
+		Faculty f4 = new Faculty("rohit@iiitg.ac.in", "Rohit", "Tripathi", "DummyLOLOL", true);
+		Faculty f5 = new Faculty("sbnath@iiitg.ac.in", "SB", "Nath", "DummyLOLOL", true);
 		
 		//Saving Faculty
 		facRepo.save(f1);
 		facRepo.save(f2);
 		facRepo.save(f3);
+		facRepo.save(f4);
+		facRepo.save(f5);
 		
 		
 		//Creating student
@@ -110,50 +100,9 @@ public class JpaCLR implements CommandLineRunner{
 		stuRepo.save(stu3);
 		stuRepo.save(stu4);
 		
-		//assigning cls_slot to students
-		stu1.setSlotClassroom(lg1S1);
-		stu2.setSlotClassroom(lg1S2);
-		stu3.setSlotClassroom(lg2S1);
-		stu4.setSlotClassroom(c13S1);
-		stuRepo.save(stu1);
-		stuRepo.save(stu2);
-		stuRepo.save(stu3);
-		stuRepo.save(stu4);
+		allocationService.allocate(votingStartTime, slotDuration, gapDuration);
 		
-		//assigning faculty to classroom
-		lg1.setAssignedFaculty(f1);
-		lg2.setAssignedFaculty(f2);
-		c13.setAssignedFaculty(f3);
-		clsRepo.save(lg1);
-		clsRepo.save(lg2);
-		clsRepo.save(c13);
-		
-		List<Student> allInLg1 = stuRepo.findBySlotClassroom_Classroom_ClassroomName("LG1");
-		System.out.println(allInLg1);
-		
-		List<Student> allInLg1S1 = stuRepo.findBySlotClassroom_Classroom_ClassroomNameAndSlotClassroom_Slot("LG1", s1);
-		System.out.println(allInLg1S1);
-		
-		List<Student> allInS1 = stuRepo.findBySlotClassroom_Slot(s1);
-		System.out.println(allInS1);
-		
-		Faculty newF = facRepo.findByAssignedClassroom_ClassroomName("LG2");
-		System.out.println(newF);
-		
-		List<Faculty> allBusyFacultyInSlot = facRepo.findByAssignedClassroom_ClassroomSlots_Slot(s1);
-		System.out.println(allBusyFacultyInSlot);
-		
-		List<Slot> allSlotOfParticularClassroom = slotRepo.findByClassroomSlots_Classroom_ClassroomName("LG2");
-		System.out.println(allSlotOfParticularClassroom);
-		
-		List<Slot> allSlotOfParticularFaculty = slotRepo.findByClassroomSlots_Classroom_AssignedFaculty_FacultyEmailId("matam@iiitg.ac.in");
-		System.out.println(allSlotOfParticularFaculty);
-		
-		List<SlotClassroom> allSlotClassOfParticularFaculty = slotClsRepo.findByClassroom_AssignedFaculty_FacultyEmailId("matam@iiitg.ac.in");
-		System.out.println(allSlotClassOfParticularFaculty);
-		
-		SlotClassroom slotClsOfParticularStudent = slotClsRepo.findByStudentEmailId("abcd@iiitg.ac.in");
-		System.out.println(slotClsOfParticularStudent);
+
 		ElectionManager man1 = new ElectionManager("sgc@iiitg.ac.in", "abc");
 		manRepo.save(man1);
 		

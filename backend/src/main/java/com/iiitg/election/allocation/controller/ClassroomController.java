@@ -22,7 +22,7 @@ import com.iiitg.election.exceptions.ResourceNotFoundException;
 import com.iiitg.election.payload.response.ErrorResponse;
 
 @RestController
-@RequestMapping("/classrooms")
+@RequestMapping("/api/classrooms")
 public class ClassroomController {
 	
 	private ClassroomService classroomService;

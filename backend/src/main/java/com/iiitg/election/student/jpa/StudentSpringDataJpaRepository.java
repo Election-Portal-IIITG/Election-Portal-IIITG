@@ -12,8 +12,7 @@ public interface StudentSpringDataJpaRepository extends JpaRepository<Student, S
 	Student findByStudentEmailId(String studentEmailId);
 	Student findByRollNumber(String rollNumber);
 	
-    List<Student> findByOnCampusTrue();
-    List<Student> findByOnCampusFalse();
+    List<Student> findByOnCampus(boolean onCampus);
     
     List<Student> findByHasVotedTrue();
     List<Student> findByHasVotedFalse();
