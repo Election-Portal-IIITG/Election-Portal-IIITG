@@ -20,7 +20,7 @@ import com.iiitg.election.student.jpa.StudentSpringDataJpaRepository;
 
 
 
-@Component
+//@Component
 public class JpaCLR implements CommandLineRunner{
 	
 	@Autowired

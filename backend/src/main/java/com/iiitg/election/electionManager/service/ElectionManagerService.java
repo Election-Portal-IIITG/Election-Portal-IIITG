@@ -12,6 +12,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -60,18 +61,18 @@ public class ElectionManagerService {
 //		return "failure";
 //	}
 	
-	public String verify(@Valid ElectionManager manager) throws Exception {
-		try {
-			Authentication authentication = authManager.authenticate(
-					new UsernamePasswordAuthenticationToken(manager.getManagerEmailId(), manager.getPassword()));
-			if (authentication.isAuthenticated()) {
-				return jwtService.generateToken(manager.getManagerEmailId());
-			}			
-		}
-		catch (AuthenticationException e){
-			throw new Exception("Invalid email or password");
-		}
-		return null;
+	public String verify(@Valid ElectionManager manager) {
+	    try {
+	        Authentication authentication = authManager.authenticate(
+	                new UsernamePasswordAuthenticationToken(manager.getManagerEmailId(), manager.getPassword()));
+	        if (authentication.isAuthenticated()) {
+	            return jwtService.generateToken(manager.getManagerEmailId());
+	        }
+	        // This shouldn't happen, but just in case
+	        throw new BadCredentialsException("Authentication failed");
+	    } catch (AuthenticationException e) {
+	        throw new BadCredentialsException("Invalid email or password");
+	    }
 	}
 
 	public void processVoterList(MultipartFile file) throws IOException {

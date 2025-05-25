@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,11 +26,15 @@ public class Election {
 	@GeneratedValue(strategy = GenerationType.UUID)
 	private String id;
 	
-	@Column(name = "election_date", nullable = false)
+	@Column(name = "election_date", nullable = false, unique = true)
 	private LocalDate electionDate;
 	
 	@Column(name = "is_complete")
 	private Boolean isComplete;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "student_account_status")
+	private StudentAccountStatus studentAccountStatus;
 	
 	@OneToMany(mappedBy = "election")
 	private List<Result> results = new ArrayList<>();
@@ -40,10 +46,11 @@ public class Election {
 		super();
 	}
 
-	public Election(LocalDate electionDate, Boolean isComplete) {
+	public Election(LocalDate electionDate) {
 		super();
 		this.electionDate = electionDate;
-		this.isComplete = isComplete;
+		this.isComplete = null;
+		this.studentAccountStatus = StudentAccountStatus.NO_ACCOUNTS_CREATED;
 	}
 
 	public String getId() {
@@ -70,6 +77,14 @@ public class Election {
 		this.isComplete = isComplete;
 	}
 
+	public StudentAccountStatus getStudentAccountStatus() {
+		return studentAccountStatus;
+	}
+
+	public void setStudentAccountStatus(StudentAccountStatus studentAccountStatus) {
+		this.studentAccountStatus = studentAccountStatus;
+	}
+
 	public List<Result> getResults() {
 		return results;
 	}
@@ -88,10 +103,8 @@ public class Election {
 
 	@Override
 	public String toString() {
-		return "Election [id=" + id + ", electionDate=" + electionDate + ", isComplete=" + isComplete + "]";
+		return "Election [id=" + id + ", electionDate=" + electionDate + ", isComplete=" + isComplete
+				+ ", studentAccountStatus=" + studentAccountStatus + ", results=" + results + ", winners=" + winners
+				+ "]";
 	}
-	
-	
-	
-
 }

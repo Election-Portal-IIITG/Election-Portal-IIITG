@@ -57,13 +57,8 @@ public class ElectionManagerController {
 
 	@PostMapping("login-manager")
 	public ResponseEntity<String> loginElectionManager(@RequestBody @Valid ElectionManager manager) {
-		try {
-			String token = electionManagerService.verify(manager);
-			return ResponseEntity.ok(token);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			return ResponseEntity.badRequest().body(e.getMessage());
-		}
+	    String token = electionManagerService.verify(manager);
+	    return ResponseEntity.ok(token);
 	}
 	
 	@GetMapping("api/manager/test")
