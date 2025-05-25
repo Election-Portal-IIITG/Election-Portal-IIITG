@@ -17,7 +17,4 @@ public interface SlotClassroomSpringDataJpaRepository extends JpaRepository<Slot
     SlotClassroom findByStudentEmailId(@Param("studentEmailId") String studentEmailId);
     
     List<SlotClassroom> findByClassroom(Classroom classroom);
-	
-	List<SlotClassroom> findByClassroom_AssignedFaculty_FacultyEmailId(String facultyEmailId);
-	
 }

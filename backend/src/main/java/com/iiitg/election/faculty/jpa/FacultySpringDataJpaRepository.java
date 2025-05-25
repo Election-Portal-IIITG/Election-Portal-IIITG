@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.iiitg.election.allocation.Slot;
 import com.iiitg.election.faculty.Faculty;
 
 public interface FacultySpringDataJpaRepository extends JpaRepository<Faculty, String> {
@@ -12,8 +11,4 @@ public interface FacultySpringDataJpaRepository extends JpaRepository<Faculty, S
 	Faculty findByFacultyEmailId(String facultyEmailId);
 	
 	List<Faculty> findByIsAvailable(Boolean isAvailable);
-	
-	Faculty findByAssignedClassroom_ClassroomName(String classroomName);
-
-	List<Faculty> findByAssignedClassroom_ClassroomSlots_Slot(Slot slot);
 }

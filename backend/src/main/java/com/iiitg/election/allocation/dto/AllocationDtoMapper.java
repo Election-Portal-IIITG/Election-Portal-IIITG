@@ -23,16 +23,6 @@ public class AllocationDtoMapper {
         classroomInfo.setCapacity(classroom.getCapacity());
         dto.setClassroom(classroomInfo);
         
-        // Map Faculty Info
-        Faculty assignedFaculty = classroom.getAssignedFaculty();
-        if (assignedFaculty != null) {
-            AllocationDto.FacultyInfo facultyInfo = new AllocationDto.FacultyInfo();
-            facultyInfo.setFirstName(assignedFaculty.getFirstName());
-            facultyInfo.setLastName(assignedFaculty.getLastName());
-            facultyInfo.setFacultyEmailId(assignedFaculty.getFacultyEmailId());
-            dto.setFaculty(facultyInfo);
-        }
-        
         // Map Election Slots with their students
         Map<Slot, List<Student>> studentsBySlot = students.stream()
             .collect(Collectors.groupingBy(
@@ -45,6 +35,16 @@ public class AllocationDtoMapper {
                     Slot slot = slotClassroom.getSlot();
                     slotInfo.setSlotStartTime(slot.getSlotStartTime());
                     slotInfo.setSlotEndTime(slot.getSlotEndTime());
+
+                    Faculty assignedFaculty = slotClassroom.getAssignedFaculty();
+                    
+                    if (assignedFaculty != null) {
+                        AllocationDto.ElectionSlotsInfo.FacultyInfo facultyInfo = new AllocationDto.ElectionSlotsInfo.FacultyInfo();
+                        facultyInfo.setFirstName(assignedFaculty.getFirstName());
+                        facultyInfo.setLastName(assignedFaculty.getLastName());
+                        facultyInfo.setFacultyEmailId(assignedFaculty.getFacultyEmailId());
+                        slotInfo.setFaculty(facultyInfo);
+                    }
                     
                     // Get students for this slot
                     List<Student> slotStudents = studentsBySlot.getOrDefault(slot, List.of());

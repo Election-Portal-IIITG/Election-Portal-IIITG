@@ -2,6 +2,7 @@ package com.iiitg.election.allocation;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.iiitg.election.faculty.Faculty;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,6 +28,10 @@ public class SlotClassroom {
 	@ManyToOne
 	@JoinColumn(name = "slot_id")
 	private Slot slot;
+	
+	@ManyToOne
+	@JoinColumn(name = "assigned_faculty_id")
+	private Faculty assignedFaculty;
 
 	public SlotClassroom() {
 		super();
@@ -61,9 +66,18 @@ public class SlotClassroom {
 	public void setSlot(Slot slot) {
 		this.slot = slot;
 	}
+	
+	public Faculty getAssignedFaculty() {
+		return assignedFaculty;
+	}
+
+	public void setAssignedFaculty(Faculty assignedFaculty) {
+		this.assignedFaculty = assignedFaculty;
+	}
 
 	@Override
 	public String toString() {
-		return "SlotClassroom [id=" + id + ", classroom=" + classroom + ", slot=" + slot + "]";
+		return "SlotClassroom [id=" + id + ", classroom=" + classroom + ", slot=" + slot + ", assignedFaculty="
+				+ assignedFaculty + "]";
 	}
 }

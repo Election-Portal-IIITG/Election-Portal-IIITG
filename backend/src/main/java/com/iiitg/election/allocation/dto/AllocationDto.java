@@ -6,7 +6,6 @@ import java.util.List;
 
 public class AllocationDto {
 	private ClassroomInfo classroom;
-	private FacultyInfo faculty;
 	private List<ElectionSlotsInfo> electionSlots;
 	
 	public static class ClassroomInfo {
@@ -28,36 +27,38 @@ public class AllocationDto {
 		}
 	}
 	
-	public static class FacultyInfo {
-	    private String firstName;
-	    private String lastName;
-	    private String facultyEmailId;
-	    
-	    //Getters and Setters for FacultyInfo
-		public String getFirstName() {
-			return firstName;
-		}
-		public void setFirstName(String firstName) {
-			this.firstName = firstName;
-		}
-		public String getLastName() {
-			return lastName;
-		}
-		public void setLastName(String lastName) {
-			this.lastName = lastName;
-		}
-		public String getFacultyEmailId() {
-			return facultyEmailId;
-		}
-		public void setFacultyEmailId(String facultyEmailId) {
-			this.facultyEmailId = facultyEmailId;
-		}
-	}
 	
 	public static class ElectionSlotsInfo {
 		private LocalDateTime slotStartTime;
 		private LocalDateTime slotEndTime;
+		private FacultyInfo faculty;
 		private List<StudentInfo> voters;
+		
+		public static class FacultyInfo {
+		    private String firstName;
+		    private String lastName;
+		    private String facultyEmailId;
+		    
+		    //Getters and Setters for FacultyInfo
+			public String getFirstName() {
+				return firstName;
+			}
+			public void setFirstName(String firstName) {
+				this.firstName = firstName;
+			}
+			public String getLastName() {
+				return lastName;
+			}
+			public void setLastName(String lastName) {
+				this.lastName = lastName;
+			}
+			public String getFacultyEmailId() {
+				return facultyEmailId;
+			}
+			public void setFacultyEmailId(String facultyEmailId) {
+				this.facultyEmailId = facultyEmailId;
+			}
+		}
 		
 		public static class StudentInfo {
 			private String studentEmailId;
@@ -109,6 +110,14 @@ public class AllocationDto {
 			this.slotEndTime = slotEndTime;
 		}
 
+		public FacultyInfo getFaculty() {
+			return faculty;
+		}
+
+		public void setFaculty(FacultyInfo faculty) {
+			this.faculty = faculty;
+		}
+
 		public List<StudentInfo> getVoters() {
 			return voters;
 		}
@@ -125,14 +134,6 @@ public class AllocationDto {
 
 	public void setClassroom(ClassroomInfo classroom) {
 		this.classroom = classroom;
-	}
-
-	public FacultyInfo getFaculty() {
-		return faculty;
-	}
-
-	public void setFaculty(FacultyInfo faculty) {
-		this.faculty = faculty;
 	}
 
 	public List<ElectionSlotsInfo> getElectionSlots() {

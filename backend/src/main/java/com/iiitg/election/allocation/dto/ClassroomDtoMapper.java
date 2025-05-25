@@ -14,15 +14,6 @@ public class ClassroomDtoMapper {
         dto.setCapacity(classroom.getCapacity());
         dto.setIsAvailable(classroom.isAvailable());
 
-        if (classroom.getAssignedFaculty() != null) {
-            ClassroomDto.FacultyInfo facultyInfo = new ClassroomDto.FacultyInfo();
-            facultyInfo.setId(classroom.getAssignedFaculty().getId());
-            facultyInfo.setFacultyEmailId(classroom.getAssignedFaculty().getFacultyEmailId());
-            facultyInfo.setFirstName(classroom.getAssignedFaculty().getFirstName());
-            facultyInfo.setLastName(classroom.getAssignedFaculty().getLastName());
-            dto.setAssignedFaculty(facultyInfo);
-        }
-
         if (classroom.getClassroomSlots() != null) {
             List<ClassroomDto.SlotInfo> slotInfos = classroom.getClassroomSlots().stream()
                 .map(slotClassroom -> {

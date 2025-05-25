@@ -8,41 +8,8 @@ public class ClassroomDto {
  private String classroomName;
  private Integer capacity;
  private Boolean isAvailable;
- private FacultyInfo assignedFaculty;
  private List<SlotInfo> slots;
 
-//A simple inner class for Faculty
- public static class FacultyInfo {
-    private String id;
-    private String facultyEmailId;
-    private String firstName;
-    private String lastName;
-    
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
-	public String getFacultyEmailId() {
-		return facultyEmailId;
-	}
-	public void setFacultyEmailId(String facultyEmailId) {
-		this.facultyEmailId = facultyEmailId;
-	}
-	public String getFirstName() {
-		return firstName;
-	}
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-	public String getLastName() {
-		return lastName;
-	}
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
- }
 
  // A simple inner class for Slot
  public static class SlotInfo {
@@ -101,14 +68,6 @@ public class ClassroomDto {
 	
 	public void setIsAvailable(Boolean isAvailable) {
 		this.isAvailable = isAvailable;
-	}
-	
-	public FacultyInfo getAssignedFaculty() {
-		return assignedFaculty;
-	}
-	
-	public void setAssignedFaculty(FacultyInfo assignedFaculty) {
-		this.assignedFaculty = assignedFaculty;
 	}
 	
 	public List<SlotInfo> getSlots() {

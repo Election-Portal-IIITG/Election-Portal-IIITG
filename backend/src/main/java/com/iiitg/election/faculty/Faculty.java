@@ -51,9 +51,6 @@ public class Faculty {
 	
 	@OneToMany(mappedBy = "approvedBy")
 	private List<Candidate> approvedCandidates;
-	
-	@OneToOne(mappedBy = "assignedFaculty")
-	private Classroom assignedClassroom;
 
 	public Faculty() {
 		super();
@@ -141,24 +138,10 @@ public class Faculty {
 		this.approvedCandidates = approvedCandidates;
 	}
 
-	
-	public Classroom getAssignedClassroom() {
-		return assignedClassroom;
-	}
-
-	
-	public void setAssignedClassroom(Classroom assignedClassroom) {
-		this.assignedClassroom = assignedClassroom;
-	}
-
-
 
 	@Override
 	public String toString() {
 		return "Faculty [id=" + id + ", facultyEmailId=" + facultyEmailId + ", firstName=" + firstName + ", lastName="
 				+ lastName + ", password=" + password + "]";
 	}
-
-	
-		
 }

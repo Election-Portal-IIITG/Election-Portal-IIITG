@@ -39,10 +39,6 @@ public class Classroom {
 	@Column(name = "is_available")
 	private boolean isAvailable;
 	
-	@OneToOne
-	@JoinColumn(name = "assigned_faculty_id")
-	private Faculty assignedFaculty;
-	
 	@OneToMany(mappedBy = "classroom")
 	private List<SlotClassroom> classroomSlots = new ArrayList<>();
 	
@@ -94,14 +90,6 @@ public class Classroom {
 	public void setAvailable(boolean isAvailable) {
 		this.isAvailable = isAvailable;
 	}
-	
-	public Faculty getAssignedFaculty() {
-		return assignedFaculty;
-	}
-
-	public void setAssignedFaculty(Faculty assignedFaculty) {
-		this.assignedFaculty = assignedFaculty;
-	}
 
 	public List<SlotClassroom> getClassroomSlots() {
 		return classroomSlots;
@@ -116,7 +104,7 @@ public class Classroom {
 	@Override
 	public String toString() {
 		return "Classroom [id=" + id + ", classroomName=" + classroomName + ", capacity=" + capacity + ", isAvailable="
-				+ isAvailable + ", assignedFaculty=" + assignedFaculty + "]";
+				+ isAvailable + "]";
 	}
 
 
