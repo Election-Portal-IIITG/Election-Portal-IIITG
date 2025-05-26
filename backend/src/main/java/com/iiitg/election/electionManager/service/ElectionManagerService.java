@@ -4,13 +4,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -34,6 +37,9 @@ public class ElectionManagerService {
 	private AuthenticationManager authManager;
 	private JwtService jwtService;
 	private StudentSpringDataJpaRepository studentRepo;
+	
+	@Autowired
+	private StudentUploadService studentUploadService;
 
 	public ElectionManagerService(ElectionManagerSpringDataJpaRepository electionManagerRepo,
 			StudentSpringDataJpaRepository studentRepo, BCryptPasswordEncoder encoder,
@@ -59,16 +65,15 @@ public class ElectionManagerService {
 //		}
 //		return "failure";
 //	}
-	
+
 	public String verify(@Valid ElectionManager manager) throws Exception {
 		try {
 			Authentication authentication = authManager.authenticate(
 					new UsernamePasswordAuthenticationToken(manager.getManagerEmailId(), manager.getPassword()));
 			if (authentication.isAuthenticated()) {
 				return jwtService.generateToken(manager.getManagerEmailId());
-			}			
-		}
-		catch (AuthenticationException e){
+			}
+		} catch (AuthenticationException e) {
 			throw new Exception("Invalid email or password");
 		}
 		return null;
@@ -92,16 +97,22 @@ public class ElectionManagerService {
 				missingHeaders.removeAll(actualHeaders);
 				throw new IllegalArgumentException("Missing required headers: " + missingHeaders);
 			}
-			StringBuilder preview = new StringBuilder("First 10 records:\n");
-			int count = 0;
-			for (CSVRecord record : csvParser) {
-				if (count >= 10)
-					break;
+			Path tempFile = null;
+			try {
+				tempFile = Files.createTempFile("voters-", ".csv");
+				Files.copy(file.getInputStream(), tempFile, StandardCopyOption.REPLACE_EXISTING);
+				studentUploadService.processFileAndCreateStudentsAsync(tempFile, filename);
 
-				preview.append(String.format("Record %d: %s, Email: %s, Roll: %s, Voted: %s, On Campus: %s%n",
-						count + 1, record.get("name"), record.get("email"),
-						record.get("roll_number"), record.get("has_voted"), record.get("on_campus")));
-				count++;
+			} catch (IOException e) {
+				if(tempFile != null) {
+					try {
+						Files.deleteIfExists(tempFile);
+					}
+					catch (IOException ex){
+						
+					}
+				}
+				throw new IOException("Could not save file or start processing: " + e.getMessage(), e);
 			}
 		}
 	}
