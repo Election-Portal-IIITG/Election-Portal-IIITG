@@ -39,14 +39,18 @@ public class StudentUploadService {
 
     @Autowired
     private SecurePasswordGenerator passwordGenerator; // Assuming this exists and is correct
+    
+    private static final String IIITG_DOMAIN = "@iiitg.ac.in";
+    
+    private boolean validateEmail(String email) {
+    	if (email == null) {
+            return false;
+        }
+        return email.endsWith(IIITG_DOMAIN);
+    }
 
-    // If you want to attempt to parse the duplicate key info from the message
-    // private static final Pattern MYSQL_DUPLICATE_KEY_PATTERN = Pattern.compile("Duplicate entry '(.+?)' for key");
-
-    // Change @Transactional: We want default rollback behavior for RuntimeExceptions.
-    // We will handle DIVEs for duplicates explicitly within the loop.
     @Async("voterProcessingExecutor")
-    @Transactional // Remove noRollbackFor, let's handle it more explicitly
+    @Transactional
     public void processFileAndCreateStudentsAsync(Path filePath, String filename) {
         logger.info("Async processing STARTING for file: {} (Thread: {})", filename, Thread.currentThread().getName());
         logger.info("Is actual transaction active? {}", TransactionSynchronizationManager.isActualTransactionActive());
@@ -70,14 +74,22 @@ public class StudentUploadService {
                     String name = record.get("name");
                     emailFromRecord = record.get("email");
                     rollNumberFromRecord = record.get("roll_number");
-                    boolean onCampus = Boolean.parseBoolean(record.get("on_campus"));
+                    String onCampusStr = record.get("on_campus");
 
                     if (name == null || name.trim().isEmpty() || emailFromRecord == null || emailFromRecord.trim().isEmpty()
                             || rollNumberFromRecord == null || rollNumberFromRecord.trim().isEmpty()) {
                         throw new IllegalArgumentException("Missing required data (name, email, or roll_number).");
                     }
+                    
+                    if(validateEmail(emailFromRecord) == false) {
+                    	throw new IllegalArgumentException("Invalid email!");
+                    }
+                    
+                    if (!"true".equalsIgnoreCase(onCampusStr) && !"false".equalsIgnoreCase(onCampusStr)) {
+                        throw new IllegalArgumentException("Invalid value for 'on_campus': must be 'true' or 'false'. Found: " + onCampusStr);
+                    }
+                    boolean onCampus = Boolean.parseBoolean(onCampusStr);
 
-                    // Pre-check for duplicates (good practice)
                     if (studentRepo.findByRollNumber(rollNumberFromRecord) != null || studentRepo.findByStudentEmailId(emailFromRecord) != null) {
                         String errorMsg = "Skipped (pre-check found existing): Roll " + rollNumberFromRecord + ", Email " + emailFromRecord;
                         logger.warn(errorMsg);
@@ -118,16 +130,19 @@ public class StudentUploadService {
                     String logMessage;
 
                     if (rootCause instanceof SQLException) {
+                    	System.err.println("Erroooooor");
                         SQLException sqlEx = (SQLException) rootCause;
                         // MySQL: 1062, H2: 23505, PostgreSQL: 23505
                         // SQLState "23000" (integrity_constraint_violation) or "23505" (unique_violation)
                         if (sqlEx.getErrorCode() == 1062 || "23000".equals(sqlEx.getSQLState()) || "23505".equals(sqlEx.getSQLState())) {
+                        	System.err.println("Duplicate Errrroooorrrrrrrrr");
                             logMessage = "Skipped (DB duplicate constraint): Roll " + rollNumberFromRecord + ", Email " + emailFromRecord + ". Details: " + sqlEx.getMessage();
                             logger.warn(logMessage);
                             errorMessages.add(logMessage);
                             failureCount++;
                             // This is a duplicate, continue with other records.
                         } else {
+                        	System.err.println("NOOOOOOOOOTTTTTTTTTTTTTTTTTTTTTTTT");
                             // Different SQL/Data integrity error - treat as critical for this batch
                             logMessage = "Record " + record.getRecordNumber() + " (Roll " + rollNumberFromRecord + "): Critical Data Integrity Error during save - " + dive.getMessage();
                             logger.error(logMessage, dive);
@@ -137,6 +152,7 @@ public class StudentUploadService {
                             entireTransactionMarkedForRollback = true; // Mark that we need to stop or indicate failure
                         }
                     } else {
+                    	System.err.println("MAJJJJJJJJJJJJJJJJJJJJJOOOOOOOORRRRRRRRRRRRRRRRRR");
                         // DIVE not caused by SQLException, or unexpected root cause. Treat as critical.
                         logMessage = "Record " + record.getRecordNumber() + " (Roll " + rollNumberFromRecord + "): Critical non-SQL Data Integrity Error during save - " + dive.getMessage();
                         logger.error(logMessage, dive);
@@ -146,6 +162,7 @@ public class StudentUploadService {
                         entireTransactionMarkedForRollback = true;
                     }
                 } catch (Exception e) { // Catch any other unexpected error for this specific record
+                	System.err.println("HERRRRRRRRRRRRRREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
                     String errorMsgBase = "Record " + record.getRecordNumber() + " (Roll " + rollNumberFromRecord + ")";
                     logger.error(errorMsgBase + ": Unexpected critical error processing record - " + e.getMessage(), e);
                     errorMessages.add(errorMsgBase + ": Unexpected critical error - " + e.getMessage());
