@@ -12,6 +12,9 @@ import com.iiitg.election.electionManager.jpa.ElectionManagerSpringDataJpaReposi
 import com.iiitg.election.faculty.Faculty;
 import com.iiitg.election.faculty.FacultyUser;
 import com.iiitg.election.faculty.jpa.FacultySpringDataJpaRepository;
+import com.iiitg.election.student.Student;
+import com.iiitg.election.student.StudentUser;
+import com.iiitg.election.student.jpa.StudentSpringDataJpaRepository;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -21,6 +24,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 	
 	@Autowired
 	private FacultySpringDataJpaRepository facultyRepo;
+	
+	@Autowired
+	private StudentSpringDataJpaRepository studentRepo;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -37,7 +43,13 @@ public class CustomUserDetailsService implements UserDetailsService {
 		if(faculty != null) {
 			return new FacultyUser(faculty);
 		}
-		System.out.println("Manager not found");
+		
+		Student student = studentRepo.findByStudentEmailId(username);
+		
+		if(student != null) {
+			return new StudentUser(student);
+		}
+
 		throw new UsernameNotFoundException("User not found");
 
 		

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.iiitg.election.core.Position;
 import com.iiitg.election.faculty.Faculty;
+import com.iiitg.election.validation.authentication.RegisterValidation;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,19 +26,19 @@ public class Candidate {
 	@GeneratedValue(strategy = GenerationType.UUID)
 	private String id;
 	
-	@NotNull(message = "Programme cannot be null")
+	@NotNull(message = "Programme cannot be null", groups = RegisterValidation.class)
 	@Column(name = "programme", nullable = false)
 	private String programme;
 	
-	@NotNull(message = "Graduating Year cannot be null")
+	@NotNull(message = "Graduating Year cannot be null", groups = RegisterValidation.class)
 	@Column(name = "graduating_year", nullable = false)
 	private int graduatingYear;
 	
-	@NotNull(message = "Student Image cannot be null")
+	@NotNull(message = "Student Image cannot be null", groups = RegisterValidation.class)
 	@Column(name = "student_image_url", nullable = false)
 	private String studentImageURL;
 	
-	@NotNull(message = "About cannot be null")
+	@NotNull(message = "About cannot be null", groups = RegisterValidation.class)
 	@Column(name = "student_about", nullable = false)
 	private String about;
 	
@@ -79,6 +80,7 @@ public class Candidate {
 //	One position can have many candidates
 	@ManyToOne
 	@JoinColumn(name = "position_id")
+	@NotNull(message = "Contesting Position cannot be null", groups = RegisterValidation.class)
 	private Position contestingPosition;
 	
 	public Candidate() {
@@ -88,14 +90,14 @@ public class Candidate {
 	public Candidate(@NotNull(message = "Programme cannot be null") String programme,
 			@NotNull(message = "Graduating Year cannot be null") int graduatingYear,
 			@NotNull(message = "Student Image cannot be null") String studentImageURL,
-			@NotNull(message = "About cannot be null") String about, String manifestoURL) {
+			@NotNull(message = "About cannot be null") String about,
+			@NotNull(message = "Contesting Position cannot be null") Position contestingPosition) {
 		super();
 		this.programme = programme;
 		this.graduatingYear = graduatingYear;
 		this.studentImageURL = studentImageURL;
 		this.about = about;
-		this.isEligible = null;
-		this.manifestoURL = manifestoURL;
+		this.contestingPosition =  contestingPosition;
 	}
 
 	public String getId() {

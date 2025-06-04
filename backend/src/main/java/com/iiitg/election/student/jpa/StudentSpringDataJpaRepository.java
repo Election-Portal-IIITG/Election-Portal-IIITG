@@ -20,4 +20,6 @@ public interface StudentSpringDataJpaRepository extends JpaRepository<Student, S
     List<Student> findBySlotClassroom_Classroom_ClassroomName(String classroomName);
     List<Student> findBySlotClassroom_Slot(Slot slot);
     List<Student> findBySlotClassroom_Classroom_ClassroomNameAndSlotClassroom_Slot(String classroomName, Slot slot);
+    
+    boolean existsByStudentEmailId(String studentEmailId);
 }
