@@ -32,7 +32,7 @@ public class ElectionManagerController {
 
 	}
 
-	@PostMapping("/upload-voter-list")
+	@PostMapping("upload-voter-list")
 	public ResponseEntity<String> uploadVoterList(@RequestParam("file") MultipartFile file) {
 		if (file.isEmpty()) {
             return ResponseEntity.badRequest().body("Please upload a valid file.");
