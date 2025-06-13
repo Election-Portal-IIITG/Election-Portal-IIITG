@@ -1,7 +1,9 @@
 package com.iiitg.election.electionManager.controller;
 
 import java.io.IOException;
+import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,6 +16,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.iiitg.election.electionManager.ElectionManager;
 import com.iiitg.election.electionManager.service.ElectionManagerService;
+import com.iiitg.election.services.EmailService.EmailRequest;
+import com.iiitg.election.services.EmailService.EmailService;
+import com.iiitg.election.services.EmailService.EmailType;
 
 import jakarta.validation.Valid;
 
@@ -21,6 +26,9 @@ import jakarta.validation.Valid;
 public class ElectionManagerController {
 
 	private ElectionManagerService electionManagerService;
+	
+	@Autowired
+	private EmailService emailService;
 
 	public ElectionManagerController(ElectionManagerService electionManagerService) {
 		super();
@@ -59,6 +67,22 @@ public class ElectionManagerController {
 	public ResponseEntity<String> loginElectionManager(@RequestBody @Valid ElectionManager manager) {
 	    String token = electionManagerService.verify(manager);
 	    return ResponseEntity.ok(token);
+	}
+	
+	@PostMapping("send-mail")
+	public ResponseEntity<String> sendEmail(@RequestBody EmailRequest emailRequest) {
+		try {
+			System.err.println("Trying to send mail");
+			System.err.println(emailRequest);
+					
+			System.err.println(emailRequest);
+			emailService.sendEmail(emailRequest);
+			return ResponseEntity.ok("Mail sent");
+		}
+		catch (Exception e) {
+			return ResponseEntity.internalServerError()
+                    .body("Failed to send message: " + e.getMessage());
+		}
 	}
 	
 	@GetMapping("api/manager/test")
