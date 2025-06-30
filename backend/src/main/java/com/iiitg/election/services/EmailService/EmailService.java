@@ -33,7 +33,6 @@ public class EmailService {
 	
 	public boolean sendEmail(EmailRequest request) {
 		try {
-			System.err.println("Indise send mail function");
 			MimeMessage message = mailSender.createMimeMessage();
 			MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 			
@@ -41,12 +40,8 @@ public class EmailService {
             Context context = new Context();
             context.setVariables(request.getTemplateModel());
             
-            System.err.println("Created context");
             
             // Get the template from builderfactory
-            System.err.println("Emailtype" + request.getEmailType());
-            System.err.println("HIIIIIIIIIIIIIIIIIs");
-            System.err.println("builder-----" + builderFactory.getTemplateName(request.getEmailType()));
             String templateName = builderFactory.getTemplateName(request.getEmailType());
             System.err.println("builder");
             String html = templateEngine.process(templateName, context);
@@ -67,12 +62,7 @@ public class EmailService {
             throw new RuntimeException("Failed to send email", e);
         }
 		catch (Exception e) {
-//			System.err.println();
-			System.out.println("Errrrrrroooooorrrrr");
-			e.printStackTrace();
-			System.err.println("Exception" + e);
-//			System.err.println("exception");
-			throw new RuntimeException("Faillllllllleeeeeeedddddddddd", e);
+			throw new RuntimeException("Internal server error", e);
 		}
 	}
 	

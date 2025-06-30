@@ -2,6 +2,11 @@ package com.iiitg.election.services.EmailService;
 
 import java.util.Map;
 
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
 public class EmailRequest {
 	private String to;
 	private String subject;
@@ -24,43 +29,5 @@ public class EmailRequest {
 		this.emailType = emailType;
 		this.templateModel = templateModel;
 	}
-	
-	
-	public String getTo() {
-		return to;
-	}
-	public void setTo(String to) {
-		this.to = to;
-	}
-	
-	public String getSubject() {
-		return subject;
-	}
-	public void setSubject(String subject) {
-		this.subject = subject;
-	}
-	public EmailType getEmailType() {
-		return emailType;
-	}
-	public void setEmailType(EmailType emailType) {
-		this.emailType = emailType;
-	}
-	public Map<String, Object> getTemplateModel() {
-		return templateModel;
-	}
-	public void setTemplateModel(Map<String, Object> templateModel) {
-		this.templateModel = templateModel;
-	}
-
-
-	@Override
-	public String toString() {
-		return "EmailRequest [to=" + to + ", subject=" + subject + ", emailType=" + emailType + ", templateModel="
-				+ templateModel + "]";
-	}
-
-
-	
-	
 	
 }

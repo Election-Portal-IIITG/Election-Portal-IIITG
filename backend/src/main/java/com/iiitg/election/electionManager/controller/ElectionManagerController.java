@@ -72,10 +72,6 @@ public class ElectionManagerController {
 	@PostMapping("send-mail")
 	public ResponseEntity<String> sendEmail(@RequestBody EmailRequest emailRequest) {
 		try {
-			System.err.println("Trying to send mail");
-			System.err.println(emailRequest);
-					
-			System.err.println(emailRequest);
 			emailService.sendEmail(emailRequest);
 			return ResponseEntity.ok("Mail sent");
 		}
