@@ -76,7 +76,15 @@ public class JpaCLR implements CommandLineRunner{
 	    for (int i = 1; i <= 30; i++) {
 	        String roll = String.format("22010%02d", i);
 	        String email = "stu" + i + "@iiitg.ac.in";
-	        stuRepo.save(new Student(email, "Student" + i, "Last", roll, "Dummy", true, false));
+	        Student student = Student.builder()
+	        	    .studentEmailId(email)
+	        	    .firstName("Animesh")
+	        	    .rollNumber(roll)
+	        	    .onCampus(true)
+	        	    .hasVoted(false)
+	        	    .isActive(true)
+	        	    .build();
+	       stuRepo.save(student);
 	    }
 
 	    // Time and duration settings
