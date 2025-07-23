@@ -21,4 +21,6 @@ public interface CandidateSpringDataJpaRepository extends JpaRepository<Candidat
 	
 	List<Candidate> findByIsApprovedTrue();
 	List<Candidate> findByIsApprovedFalse();
+	
+	boolean existsByStudent_StudentEmailId(String studentEmailId);
 }

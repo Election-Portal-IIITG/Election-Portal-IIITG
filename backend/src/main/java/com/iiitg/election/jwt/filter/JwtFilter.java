@@ -156,7 +156,9 @@ public class JwtFilter extends OncePerRequestFilter {
 	    	    "/login-manager",
 	    	    "/register-faculty",
 	    	    "/login-faculty",
-	    	    "/api/students/login"
+	    	    "/api/students/login",
+	            "/api/candidates/nomination-response",  // NEW: Allow nomination responses
+	            "/api/candidates/approval-response"     // NEW: Allow approval responses
 	    	));
 	    
 	    // Check if the request path matches any public endpoint

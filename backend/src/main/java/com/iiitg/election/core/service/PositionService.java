@@ -39,4 +39,8 @@ public class PositionService {
 		Position savedPosition = positionRepository.findById(id).get();
 	    positionRepository.delete(savedPosition);
 	}
+
+	public Position getPosition(String contestingPositionName) {
+		return positionRepository.findByPositionName(contestingPositionName);
+	}
 }

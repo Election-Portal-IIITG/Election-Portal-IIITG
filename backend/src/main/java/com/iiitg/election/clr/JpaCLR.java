@@ -97,7 +97,7 @@ public class JpaCLR implements CommandLineRunner{
 //		
 //		System.out.println(manRepo.findByManagerEmailId("sgc@iiitg.ac.in"));
 		
-		Student stu = new Student("ishaan.das22b@iiitg.ac.in", "Ishaan", "Das", "2201097", encoder.encode("SecPass123"));
+		Student stu = new Student("pallav.kumar22b@iiitg.ac.in", "Pallav", "Kumar", "2201169", encoder.encode("SecPass123"));
 		stuRepo.save(stu);
 	}
 }

@@ -26,19 +26,19 @@ public class Candidate {
 	@GeneratedValue(strategy = GenerationType.UUID)
 	private String id;
 	
-	@NotNull(message = "Programme cannot be null", groups = RegisterValidation.class)
+	@NotNull(message = "Programme cannot be null")
 	@Column(name = "programme", nullable = false)
 	private String programme;
 	
-	@NotNull(message = "Graduating Year cannot be null", groups = RegisterValidation.class)
+	@NotNull(message = "Graduating Year cannot be null")
 	@Column(name = "graduating_year", nullable = false)
 	private int graduatingYear;
 	
-	@NotNull(message = "Student Image cannot be null", groups = RegisterValidation.class)
+	@NotNull(message = "Student Image cannot be null")
 	@Column(name = "student_image_url", nullable = false)
 	private String studentImageURL;
 	
-	@NotNull(message = "About cannot be null", groups = RegisterValidation.class)
+	@NotNull(message = "About cannot be null")
 	@Column(name = "student_about", nullable = false)
 	private String about;
 	
@@ -60,9 +60,13 @@ public class Candidate {
 	@ManyToOne
 	@JoinColumn(name = "nominator_id")
 	private Student nominatedBy;
+
+	@Column(name = "nomination_token_hash")
+	private String nominationTokenHash;
 	
 	@Column(name = "is_nominated")
 	private Boolean isNominated;
+	
 	
 //	Relationship with Faculty table
 //	Many to one realtionship with faculty using faculty_id
@@ -72,6 +76,9 @@ public class Candidate {
 	@JoinColumn(name = "approver_id")
 	private Faculty approvedBy;
 	
+    @Column(name = "approval_token_hash") 
+    private String approvalTokenHash;
+	
 	@Column(name = "is_approved")
 	private Boolean isApproved;
 	
@@ -80,7 +87,7 @@ public class Candidate {
 //	One position can have many candidates
 	@ManyToOne
 	@JoinColumn(name = "position_id")
-	@NotNull(message = "Contesting Position cannot be null", groups = RegisterValidation.class)
+	@NotNull(message = "Contesting Position cannot be null")
 	private Position contestingPosition;
 	
 	public Candidate() {
@@ -172,6 +179,14 @@ public class Candidate {
 		this.nominatedBy = nominatedBy;
 	}
 
+	public String getNominationTokenHash() {
+		return nominationTokenHash;
+	}
+
+	public void setNominationTokenHash(String nominationTokenHash) {
+		this.nominationTokenHash = nominationTokenHash;
+	}
+
 	public Boolean getIsNominated() {
 		return isNominated;
 	}
@@ -186,6 +201,14 @@ public class Candidate {
 
 	public void setApprovedBy(Faculty approvedBy) {
 		this.approvedBy = approvedBy;
+	}
+
+	public String getApprovalTokenHash() {
+		return approvalTokenHash;
+	}
+
+	public void setApprovalTokenHash(String approvalTokenHash) {
+		this.approvalTokenHash = approvalTokenHash;
 	}
 
 	public Boolean getIsApproved() {
@@ -209,7 +232,8 @@ public class Candidate {
 		return "Candidate [id=" + id + ", programme=" + programme + ", graduatingYear=" + graduatingYear
 				+ ", studentImageURL=" + studentImageURL + ", about=" + about + ", isEligible=" + isEligible
 				+ ", manifestoURL=" + manifestoURL + ", student=" + student + ", nominatedBy=" + nominatedBy
-				+ ", isNominated=" + isNominated + ", approvedBy=" + approvedBy + ", isApproved=" + isApproved
+				+ ", nominationTokenHash=" + nominationTokenHash + ", isNominated=" + isNominated + ", approvedBy="
+				+ approvedBy + ", approvalTokenHash=" + approvalTokenHash + ", isApproved=" + isApproved
 				+ ", contestingPosition=" + contestingPosition + "]";
 	}
 }
