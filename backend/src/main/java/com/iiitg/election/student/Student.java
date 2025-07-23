@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.iiitg.election.allocation.SlotClassroom;
 import com.iiitg.election.annotations.ValidEmail;
+import com.iiitg.election.validation.authentication.LoginValidation;
+import com.iiitg.election.validation.authentication.RegisterValidation;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -38,18 +40,31 @@ import lombok.RequiredArgsConstructor;
 @Builder
 public class Student {
 
+	public Student(
+			@ValidEmail @Email(message = "Invalid email format") @NotNull(message = "Email ID cannot be null") String studentEmailId,
+			@NotNull(message = "Firstname cannot be null") String firstName, String lastName,
+			@NotNull(message = "Roll Number cannot be null") String rollNumber,
+			@NotNull(message = "Password cannot be null") String password) {
+		super();
+		this.studentEmailId = studentEmailId;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.rollNumber = rollNumber;
+		this.password = password;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
 	private String id;
 	
 	@ValidEmail
 	@Email(message = "Invalid email format")
-	@NotNull(message = "Email ID cannot be null")
+	@NotNull(message = "Email ID cannot be null", groups = {RegisterValidation.class, LoginValidation.class})
 	@Column(name = "student_email_id", unique = true)
 	@NonNull
 	private String studentEmailId;
-	
-	@NotNull(message = "Firstname cannot be null")
+
+	@NotNull(message = "Firstname cannot be null", groups = RegisterValidation.class)
 	@Column(name = "first_name", nullable = false)
 	@NonNull
 	private String firstName;
@@ -57,12 +72,13 @@ public class Student {
 	@Column(name = "last_name")
 	private String lastName;
 	
-	@NotNull(message = "Roll Number cannot be null")
+	@NotNull(message = "Roll Number cannot be null", groups = RegisterValidation.class)
 	@Column(name = "roll_number", unique = true)
 	@NonNull
 	private String rollNumber;
 
-	@Column(name = "password")
+	@NotNull(message = "Password cannot be null", groups = {RegisterValidation.class, LoginValidation.class})
+	@Column(name = "password", nullable = false)
 	private String password;
 
 	@NotNull(message = "On Campus cannot be null")
@@ -89,5 +105,4 @@ public class Student {
 	@ManyToOne
 	@JoinColumn(name = "slot_classroom_id")
 	private SlotClassroom slotClassroom;
-			
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.iiitg.election.core.Position;
 import com.iiitg.election.faculty.Faculty;
+import com.iiitg.election.validation.authentication.RegisterValidation;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -59,9 +60,13 @@ public class Candidate {
 	@ManyToOne
 	@JoinColumn(name = "nominator_id")
 	private Student nominatedBy;
+
+	@Column(name = "nomination_token_hash")
+	private String nominationTokenHash;
 	
 	@Column(name = "is_nominated")
 	private Boolean isNominated;
+	
 	
 //	Relationship with Faculty table
 //	Many to one realtionship with faculty using faculty_id
@@ -71,6 +76,9 @@ public class Candidate {
 	@JoinColumn(name = "approver_id")
 	private Faculty approvedBy;
 	
+    @Column(name = "approval_token_hash") 
+    private String approvalTokenHash;
+	
 	@Column(name = "is_approved")
 	private Boolean isApproved;
 	
@@ -79,6 +87,7 @@ public class Candidate {
 //	One position can have many candidates
 	@ManyToOne
 	@JoinColumn(name = "position_id")
+	@NotNull(message = "Contesting Position cannot be null")
 	private Position contestingPosition;
 	
 	public Candidate() {
@@ -88,14 +97,14 @@ public class Candidate {
 	public Candidate(@NotNull(message = "Programme cannot be null") String programme,
 			@NotNull(message = "Graduating Year cannot be null") int graduatingYear,
 			@NotNull(message = "Student Image cannot be null") String studentImageURL,
-			@NotNull(message = "About cannot be null") String about, String manifestoURL) {
+			@NotNull(message = "About cannot be null") String about,
+			@NotNull(message = "Contesting Position cannot be null") Position contestingPosition) {
 		super();
 		this.programme = programme;
 		this.graduatingYear = graduatingYear;
 		this.studentImageURL = studentImageURL;
 		this.about = about;
-		this.isEligible = null;
-		this.manifestoURL = manifestoURL;
+		this.contestingPosition =  contestingPosition;
 	}
 
 	public String getId() {
@@ -170,6 +179,14 @@ public class Candidate {
 		this.nominatedBy = nominatedBy;
 	}
 
+	public String getNominationTokenHash() {
+		return nominationTokenHash;
+	}
+
+	public void setNominationTokenHash(String nominationTokenHash) {
+		this.nominationTokenHash = nominationTokenHash;
+	}
+
 	public Boolean getIsNominated() {
 		return isNominated;
 	}
@@ -184,6 +201,14 @@ public class Candidate {
 
 	public void setApprovedBy(Faculty approvedBy) {
 		this.approvedBy = approvedBy;
+	}
+
+	public String getApprovalTokenHash() {
+		return approvalTokenHash;
+	}
+
+	public void setApprovalTokenHash(String approvalTokenHash) {
+		this.approvalTokenHash = approvalTokenHash;
 	}
 
 	public Boolean getIsApproved() {
@@ -207,7 +232,8 @@ public class Candidate {
 		return "Candidate [id=" + id + ", programme=" + programme + ", graduatingYear=" + graduatingYear
 				+ ", studentImageURL=" + studentImageURL + ", about=" + about + ", isEligible=" + isEligible
 				+ ", manifestoURL=" + manifestoURL + ", student=" + student + ", nominatedBy=" + nominatedBy
-				+ ", isNominated=" + isNominated + ", approvedBy=" + approvedBy + ", isApproved=" + isApproved
+				+ ", nominationTokenHash=" + nominationTokenHash + ", isNominated=" + isNominated + ", approvedBy="
+				+ approvedBy + ", approvalTokenHash=" + approvalTokenHash + ", isApproved=" + isApproved
 				+ ", contestingPosition=" + contestingPosition + "]";
 	}
 }

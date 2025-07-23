@@ -3,6 +3,8 @@ package com.iiitg.election.student.jpa;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.iiitg.election.allocation.Slot;
 import com.iiitg.election.student.Student;
@@ -20,4 +22,9 @@ public interface StudentSpringDataJpaRepository extends JpaRepository<Student, S
     List<Student> findBySlotClassroom_Classroom_ClassroomName(String classroomName);
     List<Student> findBySlotClassroom_Slot(Slot slot);
     List<Student> findBySlotClassroom_Classroom_ClassroomNameAndSlotClassroom_Slot(String classroomName, Slot slot);
+    
+    boolean existsByStudentEmailId(String studentEmailId);
+    
+    @Query("SELECT s.id FROM Student s WHERE s.studentEmailId = :email")
+    String findIdByStudentEmailId(@Param("email") String email);
 }

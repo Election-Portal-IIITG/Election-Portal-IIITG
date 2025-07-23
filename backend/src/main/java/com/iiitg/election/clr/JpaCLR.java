@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.iiitg.election.allocation.Classroom;
@@ -47,59 +48,56 @@ public class JpaCLR implements CommandLineRunner{
 	@Autowired
 	private AllocationService allocationService;
 	
+	@Autowired
+	private BCryptPasswordEncoder encoder;
+	
 
 	@Override
 	public void run(String... args) throws Exception {
-		elecManRepo.save(new ElectionManager("def@iiitg.ac.in", "$2a$12$3PE8djUjNmXfhA1ysx6.tOjUfXOs0uhGuIFbkLf1lLsSuE8.Kdlme"));
+//		elecManRepo.save(new ElectionManager("def@iiitg.ac.in", "$2a$12$3PE8djUjNmXfhA1ysx6.tOjUfXOs0uhGuIFbkLf1lLsSuE8.Kdlme"));
+//		
+//	    // Save 9 Classrooms with varying capacity and availability
+//	    clsRepo.save(new Classroom("CR1", 10, true));
+//	    clsRepo.save(new Classroom("CR2", 10, false));
+//	    clsRepo.save(new Classroom("CR3", 8, false));
+//	    clsRepo.save(new Classroom("CR4", 7, false));
+//	    clsRepo.save(new Classroom("CR5", 5, false));
+//	    clsRepo.save(new Classroom("CR6", 4, true));
+//	    clsRepo.save(new Classroom("CR7", 3, true));
+//	    clsRepo.save(new Classroom("CR8", 2, true));
+//	    clsRepo.save(new Classroom("CR9", 1, false));
+//
+//	    // Save 7 available faculties
+//	    facRepo.save(new Faculty("f1@iiitg.ac.in", "First", "Faculty", "Dummy", true));
+//	    facRepo.save(new Faculty("f2@iiitg.ac.in", "Second", "Faculty", "Dummy", true));
+//	    facRepo.save(new Faculty("f3@iiitg.ac.in", "Third", "Faculty", "Dummy", true));
+//	    facRepo.save(new Faculty("f4@iiitg.ac.in", "Fourth", "Faculty", "Dummy", true));
+//	    facRepo.save(new Faculty("f5@iiitg.ac.in", "Fifth", "Faculty", "Dummy", true));
+//	    facRepo.save(new Faculty("f6@iiitg.ac.in", "Sixth", "Faculty", "Dummy", true));
+//	    facRepo.save(new Faculty("f7@iiitg.ac.in", "Seventh", "Faculty", "Dummy", true));
+//
+//	    // Save 30 on-campus students with roll numbers 2201001 to 2201030
+//	    for (int i = 1; i <= 30; i++) {
+//	        String roll = String.format("22010%02d", i);
+//	        String email = "stu" + i + "@iiitg.ac.in";
+//	        stuRepo.save(new Student(email, "Student" + i, "Last", roll, "Dummy"));
+//	    }
+//
+//	    // Time and duration settings
+//	    LocalDateTime votingStartTime = LocalDateTime.of(2025, 2, 5, 17, 0);
+//	    int slotDuration = 15;
+//	    int gapDuration = 10;
+//
+//	    // Allocation logic
+//	    allocationService.allocate(votingStartTime, slotDuration, gapDuration);
+//		
+//
+//		ElectionManager man1 = new ElectionManager("sgc@iiitg.ac.in", "abc");
+//		manRepo.save(man1);
+//		
+//		System.out.println(manRepo.findByManagerEmailId("sgc@iiitg.ac.in"));
 		
-	    // Save 9 Classrooms with varying capacity and availability
-	    clsRepo.save(new Classroom("CR1", 10, true));
-	    clsRepo.save(new Classroom("CR2", 10, false));
-	    clsRepo.save(new Classroom("CR3", 8, false));
-	    clsRepo.save(new Classroom("CR4", 7, false));
-	    clsRepo.save(new Classroom("CR5", 5, false));
-	    clsRepo.save(new Classroom("CR6", 4, true));
-	    clsRepo.save(new Classroom("CR7", 3, true));
-	    clsRepo.save(new Classroom("CR8", 2, true));
-	    clsRepo.save(new Classroom("CR9", 1, false));
-
-	    // Save 7 available faculties
-	    facRepo.save(new Faculty("f1@iiitg.ac.in", "First", "Faculty", "Dummy", true));
-	    facRepo.save(new Faculty("f2@iiitg.ac.in", "Second", "Faculty", "Dummy", true));
-	    facRepo.save(new Faculty("f3@iiitg.ac.in", "Third", "Faculty", "Dummy", true));
-	    facRepo.save(new Faculty("f4@iiitg.ac.in", "Fourth", "Faculty", "Dummy", true));
-	    facRepo.save(new Faculty("f5@iiitg.ac.in", "Fifth", "Faculty", "Dummy", true));
-	    facRepo.save(new Faculty("f6@iiitg.ac.in", "Sixth", "Faculty", "Dummy", true));
-	    facRepo.save(new Faculty("f7@iiitg.ac.in", "Seventh", "Faculty", "Dummy", true));
-
-	    // Save 30 on-campus students with roll numbers 2201001 to 2201030
-	    for (int i = 1; i <= 30; i++) {
-	        String roll = String.format("22010%02d", i);
-	        String email = "stu" + i + "@iiitg.ac.in";
-	        Student student = Student.builder()
-	        	    .studentEmailId(email)
-	        	    .firstName("Animesh")
-	        	    .rollNumber(roll)
-	        	    .onCampus(true)
-	        	    .hasVoted(false)
-	        	    .isActive(true)
-	        	    .build();
-	       stuRepo.save(student);
-	    }
-
-	    // Time and duration settings
-	    LocalDateTime votingStartTime = LocalDateTime.of(2025, 2, 5, 17, 0);
-	    int slotDuration = 15;
-	    int gapDuration = 10;
-
-	    // Allocation logic
-	    allocationService.allocate(votingStartTime, slotDuration, gapDuration);
-		
-
-		ElectionManager man1 = new ElectionManager("sgc@iiitg.ac.in", "abc");
-		manRepo.save(man1);
-		
-		System.out.println(manRepo.findByManagerEmailId("sgc@iiitg.ac.in"));
-		
+		Student stu = new Student("pallav.kumar22b@iiitg.ac.in", "Pallav", "Kumar", "2201169", encoder.encode("SecPass123"));
+		stuRepo.save(stu);
 	}
 }

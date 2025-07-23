@@ -31,19 +31,18 @@ public class JwtConfig {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		return http
-			.csrf(customizer -> customizer.disable())
-			.authorizeHttpRequests(request -> request
-			.requestMatchers("/register-manager", "/login-manager", "/register-faculty", "/login-faculty")
-			.permitAll()
-//			.requestMatchers("api/manager/**").hasRole("ELECTION_MANAGER")
-			.anyRequest().authenticated())
-//			.httpBasic(Customizer.withDefaults())
-			.httpBasic(httpBasic -> httpBasic.disable())
-			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-			.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-			.build();
+	    return http
+	        .csrf(csrf -> csrf.disable())
+	        .authorizeHttpRequests(auth -> auth
+	            .anyRequest().permitAll() // Allow all requests through, and handle JWT Exceptions in JwtFilter
+	        )
+	        .sessionManagement(session -> 
+	            session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+	        )
+	        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+	        .build();
 	}
+	
 	
 	@Bean
 	public AuthenticationProvider authenticationProvider() {

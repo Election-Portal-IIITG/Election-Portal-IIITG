@@ -37,6 +37,80 @@ public class JwtService {
 				.signWith(getKey())
 				.compact();
 	}
+	
+    // NEW METHODS FOR NOMINATION/APPROVAL TOKENS
+    
+    /**
+     * Generate token for nomination requests (24 hour expiry)
+     */
+    public String generateNominationToken(String candidateEmailId, String nominatorEmailId) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("type", "NOMINATION");
+        claims.put("candidateEmailId", candidateEmailId);
+        claims.put("nominatorEmailId", nominatorEmailId);
+        
+        return Jwts.builder()
+                .claims()
+                .add(claims)
+                .subject("NOMINATION_REQUEST")
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000)) // 24 hours
+                .and()
+                .signWith(getKey())
+                .compact();
+    }
+    
+    /**
+     * Generate token for approval requests (24 hour expiry)
+     */
+    public String generateApprovalToken(String candidateEmailId, String facultyEmailId) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("type", "APPROVAL");
+        claims.put("candidateEmailId", candidateEmailId);
+        claims.put("facultyEmailId", facultyEmailId);
+        
+        return Jwts.builder()
+                .claims()
+                .add(claims)
+                .subject("APPROVAL_REQUEST")
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000)) // 24 hours
+                .and()
+                .signWith(getKey())
+                .compact();
+    }
+    
+    /**
+     * Validate and extract nomination/approval token data
+     */
+    public TokenData validateActionToken(String token) {
+        try {
+            Claims claims = extractAllClaims(token);
+            
+            // Check if token is expired
+            if (isTokenExpired(token)) {
+                throw new RuntimeException("Token has expired");
+            }
+            
+            String type = claims.get("type", String.class);
+            String candidateEmailId = claims.get("candidateEmailId", String.class);
+            
+            if ("NOMINATION".equals(type)) {
+                String studentEmailId = claims.get("studentEmailId", String.class);
+                return new TokenData(type, candidateEmailId, studentEmailId, null);
+            }
+            else if ("APPROVAL".equals(type)) {
+            	String facultyEmailId = claims.get("facultyEmailId", String.class);
+            	return new TokenData(type, candidateEmailId, null, facultyEmailId);
+            }
+            
+            throw new RuntimeException("Invalid token type");
+            
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid token: " + e.getMessage());
+        }
+    }
+
 
 	private Key getKey() {
 		byte[] keyBytes = Decoders.BASE64.decode(secretKey);

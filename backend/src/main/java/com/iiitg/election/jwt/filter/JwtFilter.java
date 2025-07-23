@@ -1,6 +1,9 @@
 package com.iiitg.election.jwt.filter;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -9,6 +12,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -20,6 +24,9 @@ import com.iiitg.election.payload.response.ErrorResponse;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,62 +45,124 @@ public class JwtFilter extends OncePerRequestFilter {
     private ObjectMapper objectMapper;
 
     /**
-     * Filters incoming HTTP requests to validate JWT tokens and set up the security context.
+     * Validates JWT tokens from incoming requests and establishes the security context.
+     * 
+     * <p>Processes the "Authorization" header to:
+     * <ul>
+     *   <li>Extract and validate JWT tokens
+     *   <li>Set up the authenticated user's security context
+     *   <li>Handle all JWT-related exceptions with appropriate error responses
+     * </ul>
      *
-     * <p>This method is part of the Spring Security filter chain and is responsible for
-     * extracting and validating JWT tokens from the "Authorization" header. If the token
-     * is valid, it sets up the security context with the authenticated user's details.
+     * <p><b>Error Handling:</b> Specific responses are returned for:
+     * <ul>
+     *   <li>Missing/invalid Authorization header
+     *   <li>Expired tokens
+     *   <li>Malformed tokens
+     *   <li>Signature issues
+     *   <li>User not found
+     * </ul>
      *
-     * <p><strong>Error Handling:</strong>
-     * The method handles exceptions related to JWT tokens, such as expired or malformed tokens,
-     * by sending appropriate error responses to the client.
-     *
-     * @param request     the HttpServletRequest object representing the incoming request.
-     *                    Must not be null.
-     * @param response    the HttpServletResponse object representing the outgoing response.
-     *                    Must not be null.
-     * @param filterChain the FilterChain object to continue the processing of the request.
-     *                    Must not be null.
-     *
-     * @throws ServletException if there is an error in the servlet processing.
-     * @throws IOException      if an input or output exception occurs.
-     *
+     * @param request The incoming HTTP request
+     * @param response The outgoing HTTP response
+     * @param filterChain The filter chain to continue processing
+     * @throws ServletException For servlet processing errors
+     * @throws IOException For I/O errors
+
      * @author Animesh Kumar (Initial implementation)
-     * @author Ishaan Das (Added error handling for JWT exceptions)
+     * @author Ishaan Das (Added comprehensive error handling for JWT exceptions)
      */
-	@Override
-	protected void doFilterInternal(@NonNull HttpServletRequest request,
-	                                @NonNull HttpServletResponse response,
-	                                @NonNull FilterChain filterChain)
-	                                throws ServletException, IOException {
-	    String authHeader = request.getHeader("Authorization");
-	    String token = null;
-	    String username = null;
+    @Override
+    protected void doFilterInternal(@NonNull HttpServletRequest request,
+                                    @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain)
+                                    throws ServletException, IOException {
+        
+        String authHeader = request.getHeader("Authorization");
+        String token = null;
+        String username = null;
 
-	    try {
-	        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-	            token = authHeader.substring(7);
-	            username = jwtService.extractUserName(token);
-	        }
+        // Check if authentication is required for this endpoint
+        if (requiresAuthentication(request)) {
+            try {
+                if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                    sendErrorResponse(response, "Authorization header is missing or invalid. Please provide a valid Bearer token.", HttpStatus.UNAUTHORIZED);
+                    return;
+                }
 
-	        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-	            UserDetails userDetails = context.getBean(CustomUserDetailsService.class).loadUserByUsername(username);
+                token = authHeader.substring(7);
+                username = jwtService.extractUserName(token);
 
-	            if (jwtService.validate(token, userDetails)) {
-	                UsernamePasswordAuthenticationToken authToken =
-	                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-	                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-	                SecurityContextHolder.getContext().setAuthentication(authToken);
-	            }
-	        }
+                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    UserDetails userDetails = context.getBean(CustomUserDetailsService.class).loadUserByUsername(username);
 
-	        filterChain.doFilter(request, response);
+                    if (jwtService.validate(token, userDetails)) {
+                        UsernamePasswordAuthenticationToken authToken =
+                                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(authToken);
+                    }
+                }
 
-	    } catch (ExpiredJwtException ex) {
-	        sendErrorResponse(response, "JWT token expired", HttpStatus.UNAUTHORIZED);
-	    } catch (JwtException ex) {
-	        sendErrorResponse(response, "Malformed or invalid JWT token", HttpStatus.UNAUTHORIZED);
-	    }
+            } catch (ExpiredJwtException ex) {
+                sendErrorResponse(response, "JWT token has expired. Please obtain a new token.", HttpStatus.UNAUTHORIZED);
+                return;
+            } catch (MalformedJwtException ex) {
+                sendErrorResponse(response, "JWT token is malformed. Please provide a valid token.", HttpStatus.UNAUTHORIZED);
+                return;
+            } catch (SignatureException ex) {
+                sendErrorResponse(response, "JWT token signature is invalid. Please provide a valid token.", HttpStatus.UNAUTHORIZED);
+                return;
+            } catch (UnsupportedJwtException ex) {
+                sendErrorResponse(response, "JWT token format is not supported. Please provide a valid token.", HttpStatus.UNAUTHORIZED);
+                return;
+            } catch (IllegalArgumentException ex) {
+                sendErrorResponse(response, "JWT token is empty or contains only whitespace. Please provide a valid token.", HttpStatus.UNAUTHORIZED);
+                return;
+            } catch (UsernameNotFoundException ex) {
+                sendErrorResponse(response, "User not found. Please check your credentials.", HttpStatus.UNAUTHORIZED);
+                return;
+            } catch (JwtException ex) {
+                sendErrorResponse(response, "Invalid JWT token. Please provide a valid token.", HttpStatus.UNAUTHORIZED);
+                return;
+            } catch (Exception ex) {
+                sendErrorResponse(response, "Authentication failed. Please provide a valid token.", HttpStatus.UNAUTHORIZED);
+                return;
+            }
+        }
+
+        filterChain.doFilter(request, response);
+    }
+	
+    /**
+     * Determines whether the requested path requires JWT authentication.
+     * 
+     * <p>This method checks if the requested path matches any of the predefined public endpoints
+     * that are exempt from authentication. Public endpoints typically include login/registration
+     * pages and other openly accessible API routes.</p>
+     * 
+     * @param request The HTTP request object containing the path to check
+     * @return {@code false} if the path matches a public endpoint (no auth required),
+     *         {@code true} if the path is protected (auth required)
+     * 
+     * @author Ishaan Das (Added comprehensive error handling for JWT exceptions)
+     */
+	private boolean requiresAuthentication(HttpServletRequest request) {
+	    String path = request.getServletPath();
+	    
+	    // Set of public endpoints that don't require authentication
+	    Set<String> publicEndpoints = new HashSet<>(Arrays.asList(
+	    	    "/register-manager",
+	    	    "/login-manager",
+	    	    "/register-faculty",
+	    	    "/login-faculty",
+	    	    "/api/students/login",
+	            "/api/candidates/nomination-response",  // NEW: Allow nomination responses
+	            "/api/candidates/approval-response"     // NEW: Allow approval responses
+	    	));
+	    
+	    // Check if the request path matches any public endpoint
+	    return !publicEndpoints.contains(path);
 	}
 
 	/**

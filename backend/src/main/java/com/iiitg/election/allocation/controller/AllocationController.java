@@ -2,6 +2,7 @@ package com.iiitg.election.allocation.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,6 +23,7 @@ public class AllocationController {
 	}
 	
 	@GetMapping("")
+	@PreAuthorize("hasRole('ELECTION_MANAGER')")
 	public List<AllocationDto> listAllocations(@RequestParam(value = "classroomName", required = false) String classroomName) {
 	    if (classroomName != null) {
 	        return allocationService.getAllocationsByClassroom(classroomName);
