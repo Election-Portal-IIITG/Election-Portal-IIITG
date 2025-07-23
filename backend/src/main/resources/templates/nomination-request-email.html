@@ -1,0 +1,10 @@
+<html>
+<body>
+    <p>Hello <strong th:text="${nominatorName}"></strong>,</p>
+    <p>You have received a nomination request from <strong th:text="${candidateName}"></strong>.</p>
+    <p>Please respond by clicking one of the links below:</p>
+    <p><a th:href="${acceptLink}">Accept Nomination</a></p>
+    <p><a th:href="${rejectLink}">Reject Nomination</a></p>
+    <p>Note: This link will expire in 24 hours.</p>
+</body>
+</html>

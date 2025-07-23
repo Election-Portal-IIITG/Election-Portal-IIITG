@@ -59,4 +59,4 @@ Thumbs.db
 !.env.example
 
 ### Media Files ###
-uploads
+/uploads/*

@@ -11,11 +11,12 @@ public class EmailBuilderFactory {
 	
 	public EmailBuilderFactory() {
 		templateMap = Map.of(
-			EmailType.PASSWORD_NOTIFICATION, "password-email",
-	        EmailType.ELECTION_INFO, "election-info-email",
-	        EmailType.BOOTH_ROOM_DETAILS, "booth-room-email"	
-		);
-				
+			    EmailType.PASSWORD_NOTIFICATION, "password-email",
+			    EmailType.ELECTION_INFO, "election-info-email",
+			    EmailType.BOOTH_ROOM_DETAILS, "booth-room-email",
+			    EmailType.NOMINATION_REQUEST, "nomination-request-email",
+			    EmailType.APPROVAL_REQUEST, "approval-request-email"
+			);	
 	}
 	
 	public String getTemplateName(EmailType type) {

@@ -1,0 +1,18 @@
+<html>
+<body>
+    <p>Hello <strong th:text="${facultyName}"></strong>,</p>
+    
+    <p>The following candidate has requested your approval:</p>
+    <ul>
+        <li><strong>Name:</strong> <span th:text="${candidateName}"></span></li>
+        <li><strong>Position:</strong> <span th:text="${positionName}"></span></li>
+        <li><strong>Nominated By:</strong> <span th:text="${nominatorName}"></span></li>
+    </ul>
+    
+    <p>Please choose an action:</p>
+    <p><a th:href="${approveLink}">Approve Candidate</a></p>
+    <p><a th:href="${rejectLink}">Reject Candidate</a></p>
+    
+    <p>This link will expire in 24 hours.</p>
+</body>
+</html>

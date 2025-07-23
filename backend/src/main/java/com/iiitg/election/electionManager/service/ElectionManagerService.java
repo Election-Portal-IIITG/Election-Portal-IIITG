@@ -26,32 +26,33 @@ import org.springframework.web.multipart.MultipartFile;
 import com.iiitg.election.electionManager.ElectionManager;
 import com.iiitg.election.electionManager.jpa.ElectionManagerSpringDataJpaRepository;
 import com.iiitg.election.jwt.JwtService;
+import com.iiitg.election.student.jpa.CandidateSpringDataJpaRepository;
 import com.iiitg.election.student.jpa.StudentSpringDataJpaRepository;
 
 import jakarta.validation.Valid;
 
 @Service
 public class ElectionManagerService {
-
+	@Autowired
 	private ElectionManagerSpringDataJpaRepository electionManagerRepo;
+	
+	@Autowired
 	private BCryptPasswordEncoder encoder;
+	
+	@Autowired
 	private AuthenticationManager authManager;
+	
+	@Autowired
 	private JwtService jwtService;
+	
+	@Autowired
 	private StudentSpringDataJpaRepository studentRepo;
 	
 	@Autowired
+	private CandidateSpringDataJpaRepository candidateRepo;
+	
+	@Autowired
 	private StudentUploadService studentUploadService;
-
-	public ElectionManagerService(ElectionManagerSpringDataJpaRepository electionManagerRepo,
-			StudentSpringDataJpaRepository studentRepo, BCryptPasswordEncoder encoder,
-			AuthenticationManager authManager, JwtService jwtService) {
-		super();
-		this.electionManagerRepo = electionManagerRepo;
-		this.encoder = encoder;
-		this.authManager = authManager;
-		this.jwtService = jwtService;
-		this.studentRepo = studentRepo;
-	}
 
 	public ElectionManager register(@Valid ElectionManager manager) {
 		manager.setPassword(encoder.encode(manager.getPassword()));

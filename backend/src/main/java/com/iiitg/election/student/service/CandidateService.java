@@ -1,9 +1,12 @@
 package com.iiitg.election.student.service;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -14,14 +17,21 @@ import com.iiitg.election.core.Position;
 import com.iiitg.election.core.service.PositionService;
 import com.iiitg.election.core.utils.TokenHashUtil;
 import com.iiitg.election.faculty.Faculty;
+import com.iiitg.election.faculty.dto.ApproverDTO;
 import com.iiitg.election.faculty.jpa.FacultySpringDataJpaRepository;
 import com.iiitg.election.image.service.ImageService;
 import com.iiitg.election.jwt.JwtService;
 import com.iiitg.election.jwt.TokenData;
+import com.iiitg.election.services.EmailService.EmailRequest;
+import com.iiitg.election.services.EmailService.EmailService;
+import com.iiitg.election.services.EmailService.EmailType;
 import com.iiitg.election.student.Candidate;
 import com.iiitg.election.student.Student;
 import com.iiitg.election.student.controller.CandidateRegistrationDto;
+import com.iiitg.election.student.dto.ApprovedCandidateDTO;
+import com.iiitg.election.student.dto.NominatorDTO;
 import com.iiitg.election.student.exceptions.ApprovalException;
+import com.iiitg.election.student.exceptions.BusinessValidationException;
 import com.iiitg.election.student.exceptions.InvalidTokenException;
 import com.iiitg.election.student.exceptions.NominationException;
 import com.iiitg.election.student.jpa.CandidateSpringDataJpaRepository;
@@ -54,6 +64,9 @@ public class CandidateService {
     
     @Autowired
     private TokenHashUtil tokenHashUtil;
+    
+    @Autowired
+    private EmailService emailService;
     
     public Candidate registerCandidate(String studentEmailId, CandidateRegistrationDto candidateRequest) throws IOException {
 
@@ -108,49 +121,51 @@ public class CandidateService {
     
     public String requestNomination(String candidateEmailId, String nominatorEmailId) {
         Candidate candidate = candidateRepository.findByStudent_StudentEmailId(candidateEmailId);
-        if(candidate == null) {
-            throw new EntityNotFoundException("Candidate not found");
-        }
-        
-        // Check if candidate can request nomination
-        if (candidate.getIsNominated() != null && candidate.getIsNominated() == true) {
+        if (candidate == null) throw new EntityNotFoundException("Candidate not found");
+
+        if (Boolean.TRUE.equals(candidate.getIsNominated())) {
             throw new NominationException("Already nominated by another student");
         }
-        
+
         Student nominator = studentRepository.findByStudentEmailId(nominatorEmailId);
-        if(nominator == null) {
-            throw new EntityNotFoundException("Student not found");
-        }
-        
+        if (nominator == null) throw new EntityNotFoundException("Student not found");
+
         if (candidateEmailId.equals(nominatorEmailId)) {
             throw new NominationException("Cannot nominate yourself");
         }
-        
-        // Generate JWT token
+
+        // Generate and store hash of the token
         String token = jwtService.generateNominationToken(candidateEmailId, nominatorEmailId);
-        
-        // Hash the token and store it
         String tokenHash = tokenHashUtil.hashToken(token);
-        
-        // Set the nominator and store the token hash
+
         candidate.setNominatedBy(nominator);
         candidate.setIsNominated(null);
-        candidate.setNominationTokenHash(tokenHash); // Store the hash
+        candidate.setNominationTokenHash(tokenHash);
         candidateRepository.save(candidate);
-        
+
+        // Prepare email links
         String acceptLink = "http://localhost:8080/api/candidates/nomination-response?token=" + token + "&accept=true";
         String rejectLink = "http://localhost:8080/api/candidates/nomination-response?token=" + token + "&accept=false";
-        
-        System.out.println("=== NOMINATION REQUEST ===");
-        System.out.println("To: " + nominator.getFirstName() + " (" + nominator.getStudentEmailId() + ")");
-        System.out.println("Subject: Nomination Request from " + candidate.getStudent().getFirstName());
-        System.out.println("Accept Link: " + acceptLink);
-        System.out.println("Reject Link: " + rejectLink);
-        System.out.println("Token expires in 24 hours");
-        System.out.println("========================");
-        
+
+        // Prepare the email
+        Map<String, Object> model = new HashMap<>();
+        model.put("nominatorName", nominator.getFirstName());
+        model.put("candidateName", candidate.getStudent().getFirstName());
+        model.put("acceptLink", acceptLink);
+        model.put("rejectLink", rejectLink);
+
+        EmailRequest emailRequest = EmailRequest.builder()
+            .to(nominator.getStudentEmailId())
+            .subject("Nomination Request from " + candidate.getStudent().getFirstName())
+            .emailType(EmailType.NOMINATION_REQUEST)
+            .templateModel(model)
+            .build();
+
+        emailService.sendEmailAsync(emailRequest); // or sendEmail(...) if you want it sync
+
         return "Nomination request sent to " + nominator.getFirstName();
     }
+
     
     public String handleNominationResponse(String token, boolean accept) {
         // Validate JWT token first
@@ -194,58 +209,51 @@ public class CandidateService {
 
     public String requestApproval(String candidateEmailId, String facultyEmailId) {
         Candidate candidate = candidateRepository.findByStudent_StudentEmailId(candidateEmailId);
-        if(candidate == null) {
-            throw new EntityNotFoundException("Candidate not found");
-        }
-        
-        // Check if candidate is nominated first
-        if (candidate.getIsNominated() == null) {
+        if(candidate == null) throw new EntityNotFoundException("Candidate not found");
+
+        if (candidate.getIsNominated() == null)
             throw new ApprovalException("Cannot request approval: Candidate nomination is still pending");
-        }
-        
-        if (!candidate.getIsNominated()) {
+        if (!candidate.getIsNominated())
             throw new ApprovalException("Cannot request approval: Candidate is not nominated by any student");
-        }
-        
-        // Check if candidate is already approved
-        if (candidate.getIsApproved() != null && candidate.getIsApproved()) {
+
+        if (Boolean.TRUE.equals(candidate.getIsApproved()))
             throw new ApprovalException("Candidate is already approved by faculty");
-        }
-        
+
         Faculty faculty = facultyRepository.findByFacultyEmailId(facultyEmailId);
-        if(faculty == null) {
-            throw new EntityNotFoundException("Faculty not found");
-        }
-        
-        // Generate JWT token
+        if(faculty == null) throw new EntityNotFoundException("Faculty not found");
+
+        // Token generation
         String token = jwtService.generateApprovalToken(candidateEmailId, facultyEmailId);
-        
-        // Hash the token and store it
         String tokenHash = tokenHashUtil.hashToken(token);
-        
-        // Set the approver and store the token hash
+
         candidate.setApprovedBy(faculty);
-        candidate.setIsApproved(null); // Set to null (pending)
-        candidate.setApprovalTokenHash(tokenHash); // Store the hash
+        candidate.setIsApproved(null);
+        candidate.setApprovalTokenHash(tokenHash);
         candidateRepository.save(candidate);
-        
+
         String acceptLink = "http://localhost:8080/api/candidates/approval-response?token=" + token + "&approve=true";
         String rejectLink = "http://localhost:8080/api/candidates/approval-response?token=" + token + "&approve=false";
-        
-        System.out.println("=== APPROVAL REQUEST ===");
-        System.out.println("To: " + faculty.getFirstName() + " (" + faculty.getFacultyEmailId() + ")");
-        System.out.println("Subject: Approval Request for " + candidate.getStudent().getFirstName());
-        System.out.println("Candidate: " + candidate.getStudent().getFirstName() + " " + candidate.getStudent().getLastName());
-        System.out.println("Position: " + candidate.getContestingPosition().getPositionName());
-        System.out.println("Nominated by: " + candidate.getNominatedBy().getFirstName() + " " + candidate.getNominatedBy().getLastName());
-        System.out.println("Approve Link: " + acceptLink);
-        System.out.println("Reject Link: " + rejectLink);
-        System.out.println("Token expires in 24 hours");
-        System.out.println("========================");
-        
+
+        // Email model
+        Map<String, Object> model = new HashMap<>();
+        model.put("facultyName", faculty.getFirstName());
+        model.put("candidateName", candidate.getStudent().getFirstName() + " " + candidate.getStudent().getLastName());
+        model.put("positionName", candidate.getContestingPosition().getPositionName());
+        model.put("nominatorName", candidate.getNominatedBy().getFirstName() + " " + candidate.getNominatedBy().getLastName());
+        model.put("approveLink", acceptLink);
+        model.put("rejectLink", rejectLink);
+
+        EmailRequest emailRequest = EmailRequest.builder()
+            .to(faculty.getFacultyEmailId())
+            .subject("Approval Request for " + candidate.getStudent().getFirstName())
+            .emailType(EmailType.APPROVAL_REQUEST)
+            .templateModel(model)
+            .build();
+
+        emailService.sendEmailAsync(emailRequest);
+
         return "Approval request sent to " + faculty.getFirstName() + " (" + faculty.getFacultyEmailId() + ")";
     }
-    
     
     public String handleApprovalResponse(String token, boolean approve) {
         // Validate JWT token first
@@ -294,6 +302,77 @@ public class CandidateService {
             "Approval granted successfully! " + candidateName + " is now approved to contest for " + position + "." : 
             "Approval rejected. " + candidateName + " can request approval from another faculty member.";
     }
+    
+	public List<ApprovedCandidateDTO> getAllApprovedCandidates() {
+	    // Find all candidates where isApproved = true
+	    List<Candidate> approvedCandidates = candidateRepository.findByIsApprovedTrue();
+	    
+	    if (approvedCandidates.isEmpty()) {
+	        throw new EntityNotFoundException("No approved candidates found");
+	    }
+	    
+	    return approvedCandidates.stream()
+	        .map(this::convertToApprovedCandidateDTO)
+	        .collect(Collectors.toList());
+	}
+	
+	private ApprovedCandidateDTO convertToApprovedCandidateDTO(Candidate candidate) {
+	    ApprovedCandidateDTO dto = new ApprovedCandidateDTO();
+	    
+	    // Basic candidate info from student
+	    Student student = candidate.getStudent();
+	    dto.setStudentEmailId(student.getStudentEmailId());
+	    dto.setFirstName(student.getFirstName());
+	    dto.setLastName(student.getLastName());
+	    dto.setRollNumber(student.getRollNumber());
+	    
+	    // Candidate specific info
+	    dto.setProgramme(candidate.getProgramme());
+	    dto.setGraduatingYear(candidate.getGraduatingYear());
+	    dto.setStudentImageURL(candidate.getStudentImageURL()); // Frontend will use this URL
+	    dto.setIsEligible(candidate.getIsEligible());
+	    
+	    // Nominator info
+	    Student nominator = candidate.getNominatedBy();
+	    NominatorDTO nominatorDTO = new NominatorDTO(nominator.getFirstName(),
+	    		nominator.getLastName(),
+	    		nominator.getRollNumber(),
+	    		nominator.getStudentEmailId()
+	    		);
+	    dto.setNominatedBy(nominatorDTO);
+	    
+	    // Approver info
+	    Faculty approver = candidate.getApprovedBy();
+	        ApproverDTO approverDTO = new ApproverDTO(
+	            approver.getFirstName(),
+	            approver.getLastName(),
+	            approver.getFacultyEmailId()
+	        );
+	    dto.setApprovedBy(approverDTO);
+	    
+	    // Position info
+	    Position position = candidate.getContestingPosition();
+	    dto.setContestingPosition(position.getPositionName());
+	    
+	    return dto;
+	}
+	
+	public void updateCandidateEligibility(String candidateEmailId, Boolean isEligible) {
+	    Candidate candidate = candidateRepository.findByStudent_StudentEmailId(candidateEmailId);
+	    if (candidate == null) {
+	        throw new EntityNotFoundException("Candidate not found with email: " + candidateEmailId);
+	    }
+	    
+	    // Check if candidate is approved - only approved candidates can have eligibility updated
+	    if (candidate.getIsApproved() == null || !candidate.getIsApproved()) {
+	        throw new BusinessValidationException("Cannot update eligibility: Candidate is not approved by faculty");
+	    }
+	    
+	    // Update eligibility status
+	    candidate.setIsEligible(isEligible);
+	    candidateRepository.save(candidate);
+	}
+
 
     public List<Candidate> getAllCandidates() {
         return candidateRepository.findAll();
