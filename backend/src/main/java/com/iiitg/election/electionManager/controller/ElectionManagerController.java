@@ -1,15 +1,13 @@
 package com.iiitg.election.electionManager.controller;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.FileNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,8 +20,8 @@ import com.iiitg.election.electionManager.dto.EligibilityUpdateRequest;
 import com.iiitg.election.electionManager.service.ElectionManagerService;
 import com.iiitg.election.services.EmailService.EmailRequest;
 import com.iiitg.election.services.EmailService.EmailService;
-import com.iiitg.election.student.dto.ApprovedCandidateDTO;
-import com.iiitg.election.student.service.CandidateService;
+import com.iiitg.election.services.FileService.FileService;
+import com.iiitg.election.services.FileService.FileType;
 
 import jakarta.validation.Valid;
 
@@ -32,6 +30,9 @@ public class ElectionManagerController {
 	
 	@Autowired
 	private ElectionManagerService electionManagerService;
+	
+	@Autowired
+	private FileService fileService;
 	
 	@Autowired
 	private EmailService emailService;
@@ -51,15 +52,19 @@ public class ElectionManagerController {
         }
 
         try {
-            electionManagerService.processVoterList(file);
+//            electionManagerService.processVoterList(file);
+        	fileService.uploadFile(file, FileType.CSV, "abc");
             return ResponseEntity.ok("File processed successfully!\n");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error processing file: " + e.getMessage());
         }
 
+	}
+	
+	@DeleteMapping("/files/{fileId}")
+	public ResponseEntity<String> deleteFile(@PathVariable("fileId") String fileId) throws FileNotFoundException {
+		boolean deleted = fileService.deleteFile(fileId);
+	    return ResponseEntity.ok("File deleted successfully.");
 	}
 
 	@PostMapping("register-manager")

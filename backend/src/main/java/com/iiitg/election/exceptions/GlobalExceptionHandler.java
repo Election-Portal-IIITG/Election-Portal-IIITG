@@ -1,5 +1,6 @@
 package com.iiitg.election.exceptions;
 
+import java.io.FileNotFoundException;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
@@ -20,6 +21,8 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import com.iiitg.election.payload.response.ErrorResponse;
+import com.iiitg.election.services.FileService.Exceptions.FileStorageException;
+import com.iiitg.election.student.exceptions.FileProcessingException;
 import com.iiitg.election.student.exceptions.ApprovalException;
 import com.iiitg.election.student.exceptions.BusinessValidationException;
 import com.iiitg.election.student.exceptions.InvalidTokenException;
@@ -97,6 +100,27 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleEntityNotFoundException(EntityNotFoundException ex) {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+    
+    @ExceptionHandler(FileNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleFileNotFoundException(FileNotFoundException ex, WebRequest request) {
+    	String message = "File not found" + ex.getMessage();
+    	ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND, message);
+    	return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+    
+    @ExceptionHandler(FileStorageException.class)
+    public ResponseEntity<ErrorResponse> handleFileStorageException(FileStorageException ex, WebRequest request) {
+        // Log the full error for debugging, as this is a server failure.
+    	String message = "Error storing file on the server. Please try again later." + ex.getMessage();
+    	ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, message);
+    	return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    
+    public ResponseEntity<ErrorResponse> handleFileProcessingException(FileProcessingException ex, WebRequest request) {
+    	String message = "Error processing file. Please try again later." + ex.getMessage();
+    	ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, message);
+    	return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
     
  // Handle 404 - Unwrapping Optional Entities
