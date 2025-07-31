@@ -43,11 +43,8 @@ public class EmailService {
             
             // Get the template from builderfactory
             String templateName = builderFactory.getTemplateName(request.getEmailType());
-            System.err.println("builder");
             String html = templateEngine.process(templateName, context);
-            
-            System.err.println("Created html");
-            
+                        
             helper.setTo(request.getTo());
             helper.setSubject(request.getSubject());
             helper.setFrom(from);
